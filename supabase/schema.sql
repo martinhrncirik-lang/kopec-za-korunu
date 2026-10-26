@@ -38,3 +38,12 @@ create table if not exists push_subscriptions (
 alter table athletes enable row level security;
 alter table activities enable row level security;
 alter table push_subscriptions enable row level security;
+
+-- v0.2: deník zpráv od Stravy (pro ladění webhooku)
+create table if not exists webhook_events (
+  id          bigint generated always as identity primary key,
+  received_at timestamptz not null default now(),
+  payload     jsonb not null,
+  result      text
+);
+alter table webhook_events enable row level security;

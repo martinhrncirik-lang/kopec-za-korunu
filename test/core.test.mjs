@@ -4,8 +4,8 @@ import { buildSpayd, variableSymbol } from '../lib/spayd.js';
 import { judge } from '../lib/stats.js';
 import { previousMonth } from '../lib/months.js';
 
-test('IBAN účtu 663936/0300 má platný kontrolní součet', () => {
-  const iban = 'CZ5503000000000000663936';
+test('IBAN účtu 663939/0300 má platný kontrolní součet', () => {
+  const iban = 'CZ7103000000000000663939';
   const r = iban.slice(4) + iban.slice(0, 4);
   const num = r.replace(/[A-Z]/g, (c) => String(c.charCodeAt(0) - 55));
   assert.equal(BigInt(num) % 97n, 1n);
@@ -17,8 +17,8 @@ test('VS = RRMM + ID na 6 míst', () => {
 });
 
 test('SPAYD řetězec', () => {
-  const s = buildSpayd({ iban: 'CZ5503000000000000663936', amount: 347, vs: '2610000001', message: 'Kopec za korunu 2026-10' });
-  assert.equal(s, 'SPD*1.0*ACC:CZ5503000000000000663936*AM:347.00*CC:CZK*X-VS:2610000001*MSG:Kopec za korunu 2026-10');
+  const s = buildSpayd({ iban: 'CZ7103000000000000663939', amount: 347, vs: '2610000001', message: 'Kopec za korunu 2026-10' });
+  assert.equal(s, 'SPD*1.0*ACC:CZ7103000000000000663939*AM:347.00*CC:CZK*X-VS:2610000001*MSG:Kopec za korunu 2026-10');
 });
 
 test('předchozí měsíc přes přelom roku', () => {

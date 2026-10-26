@@ -5,6 +5,7 @@ import { RATE_CZK_PER_KM } from '@/lib/config';
 import { fmtKm } from '@/lib/stats';
 import PushButton from './components/PushButton';
 import ShareButton from './components/ShareButton';
+import { syncRecent, recentActivities } from '@/lib/sync';
 
 export const dynamic = 'force-dynamic';
 
@@ -32,8 +33,12 @@ export default async function Home({ searchParams }) {
     );
   }
 
+  // Pojistka: doplní jízdy, které nedorazily přes webhook.
+  try { await syncRecent(athlete); } catch (e) { console.error('sync', e); }
+
   const month = currentMonth();
   const { km, count } = await monthSummary(athlete.id, month);
+  const recent = await recentActivities(athlete.id, 5);
   const czk = Math.round(km * RATE_CZK_PER_KM);
   const months = (await monthsWithData(athlete.id)).filter((m) => m !== month).slice(0, 6);
 
@@ -47,6 +52,22 @@ export default async function Home({ searchParams }) {
         <p>{count} {count === 1 ? 'aktivita' : count >= 2 && count <= 4 ? 'aktivity' : 'aktivit'} · {czk.toLocaleString('cs-CZ')} Kč pro NRV</p>
         <a className="btn ghost" href={`/vypis/${month}`}>Darovat už teď</a>
       </section>
+
+      {recent.length > 0 && (
+        <section className="card">
+          <h2>Poslední aktivity</h2>
+          <ul className="months">
+            {recent.map((r) => (
+              <li key={r.strava_id}>
+                <a href={`/svih/${r.strava_id}`}>
+                  {new Date(r.start_local + 'Z').toLocaleDateString('cs-CZ', { day: 'numeric', month: 'numeric', timeZone: 'UTC' })}
+                  {' · '}{fmtKm(r.distance_m / 1000)} km{r.praise ? ' · ⭐ švih' : ''}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       <section className="card">
         <h2>Notifikace</h2>
