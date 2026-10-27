@@ -6,6 +6,7 @@ import { fmtKm } from '@/lib/stats';
 import PushButton from './components/PushButton';
 import ShareButton from './components/ShareButton';
 import { syncRecent, recentActivities } from '@/lib/sync';
+import { vocative } from '@/lib/vocative';
 
 export const dynamic = 'force-dynamic';
 
@@ -23,8 +24,12 @@ export default async function Home({ searchParams }) {
   if (!athlete) {
     return (
       <>
-        <section className="hero">
-          <h1>Jeden kilometr, jedna koruna.</h1>
+        <section className="photo-hero tall">
+          <div className="photo-top">
+            <h1>Jeden kilometr,<br />jedna koruna.</h1>
+          </div>
+        </section>
+        <section className="intro">
           <p>Jezdíte jako obvykle. Kilometry ze Stravy se sečtou a jednou za měsíc dostanete výpis s QR kódem na dar pro Nadaci rodiny Vlčkových.</p>
           {sp?.chyba && <p className="error">{ERRORS[sp.chyba] || 'Něco se pokazilo.'}</p>}
           <a className="btn strava" href="/api/auth/login">Připojit přes Stravu</a>
@@ -44,14 +49,18 @@ export default async function Home({ searchParams }) {
 
   return (
     <>
-      <h1>Ahoj{athlete.firstname ? `, ${athlete.firstname}` : ''}</h1>
-
-      <section className="card stat">
-        <p className="muted">{monthLabel(month)} zatím</p>
-        <p className="big">{fmtKm(km)} km</p>
-        <p>{count} {count === 1 ? 'aktivita' : count >= 2 && count <= 4 ? 'aktivity' : 'aktivit'} · {czk.toLocaleString('cs-CZ')} Kč pro NRV</p>
-        <a className="btn ghost" href={`/vypis/${month}`}>Darovat už teď</a>
+      <section className="photo-hero">
+        <div className="photo-top">
+          <h1>Ahoj{athlete.firstname ? ` ${vocative(athlete.firstname)}` : ''}</h1>
+        </div>
+        <div className="photo-bottom">
+          <p className="photo-label">{monthLabel(month)} zatím</p>
+          <p className="photo-km">{fmtKm(km)} km</p>
+          <p className="photo-sub">{count} {count === 1 ? 'aktivita' : count >= 2 && count <= 4 ? 'aktivity' : 'aktivit'} · {czk.toLocaleString('cs-CZ')} Kč pro NRV</p>
+        </div>
       </section>
+
+      <a className="btn block" href={`/vypis/${month}`}>Darovat už teď</a>
 
       {recent.length > 0 && (
         <section className="card">

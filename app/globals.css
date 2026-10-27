@@ -25,8 +25,6 @@ body {
 main { max-width: 520px; margin: 0 auto; padding: 16px 16px 48px; }
 h1 { font-size: 1.6rem; line-height: 1.2; margin: 12px 0 16px; }
 h2 { font-size: 1.05rem; margin: 0 0 8px; }
-.hero { padding: 24px 0; }
-.hero h1 { font-size: 2.1rem; }
 .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin: 0 0 14px; }
 .stat .big, .big { font-size: 2.2rem; font-weight: 750; margin: 0; font-variant-numeric: tabular-nums; }
 .stat p { margin: 4px 0; }
@@ -52,3 +50,27 @@ h2 { font-size: 1.05rem; margin: 0 0 8px; }
 .months li { padding: 8px 0; border-top: 1px solid var(--line); }
 .months li:first-child { border-top: 0; }
 .months a { color: var(--accent); text-decoration: none; font-weight: 600; }
+
+/* Pás s fotkou nahoře */
+.photo-hero {
+  position: relative; margin: -16px -16px 16px; min-height: 340px;
+  display: flex; flex-direction: column; justify-content: space-between;
+  background:
+    linear-gradient(180deg, rgba(0, 25, 80, .25) 0%, rgba(0, 0, 0, 0) 35%, rgba(0, 0, 0, .15) 60%, rgba(10, 14, 12, .78) 100%),
+    url('/hero.jpg') center 62% / cover no-repeat;
+  color: #fff; border-radius: 0 0 22px 22px; overflow: hidden;
+}
+.photo-hero.tall { min-height: 62vh; }
+.photo-top { padding: 22px 20px 0; }
+.photo-top h1 { margin: 0; font-size: 2rem; text-shadow: 0 1px 12px rgba(0, 20, 70, .45); }
+.photo-hero.tall .photo-top h1 { font-size: 2.4rem; line-height: 1.1; }
+.photo-bottom { padding: 0 20px 20px; text-shadow: 0 1px 8px rgba(0, 0, 0, .5); }
+.photo-bottom p { margin: 0; }
+.photo-label { font-size: .95rem; opacity: .9; }
+.photo-km { font-size: 3rem; font-weight: 800; line-height: 1.05; font-variant-numeric: tabular-nums; }
+.photo-sub { font-size: 1rem; opacity: .95; }
+.btn.block { display: block; text-align: center; margin: 0 0 14px; }
+.intro { padding: 4px 0 16px; }
+@media (min-width: 560px) {
+  .photo-hero { margin: 0 0 16px; border-radius: 22px; }
+}

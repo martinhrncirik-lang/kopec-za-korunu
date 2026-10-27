@@ -45,3 +45,10 @@ test('převýšení', () => {
   const prev = [ride(60, 400), ride(55, 300), ride(70, 500), ride(65, 200), ride(68, 350)];
   assert.match(judge(ride(50, 900), prev, prev), /převýšení.*900 m.*o 400 m/);
 });
+
+import { vocative } from '../lib/vocative.js';
+test('oslovení v 5. pádě', () => {
+  const cases = { Martin: 'Martine', Jakub: 'Jakube', Lukáš: 'Lukáši', Jiří: 'Jiří', Pavel: 'Pavle', Petr: 'Petře',
+    Marek: 'Marku', Jan: 'Jane', Michal: 'Michale', Ondřej: 'Ondřeji', Jana: 'Jano', Lucie: 'Lucie', Karel: 'Karle', Daniel: 'Danieli' };
+  for (const [k, v] of Object.entries(cases)) assert.equal(vocative(k), v, k);
+});
