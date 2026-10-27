@@ -27,6 +27,9 @@ export async function POST(req) {
     if (!RECIPIENTS.some((r) => r.id === body.default_recipient)) return new Response('Bad request', { status: 400 });
     update.default_recipient = body.default_recipient;
   }
+  if (body.payer_name !== undefined) {
+    update.payer_name = String(body.payer_name).replace(/\*/g, '').trim().slice(0, 40);
+  }
   if (!Object.keys(update).length) return new Response('Bad request', { status: 400 });
   const { error } = await db().from('athletes').update(update).eq('id', athleteId);
   if (error) return new Response('DB error', { status: 500 });

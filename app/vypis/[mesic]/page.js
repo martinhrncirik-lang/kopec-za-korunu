@@ -4,7 +4,7 @@ import { pickRecipientId } from '@/lib/recipients';
 import { currentAthleteId } from '@/lib/session';
 import { isMonth, monthLabel } from '@/lib/months';
 import { RATE_CZK_PER_KM } from '@/lib/config';
-import { variableSymbol } from '@/lib/spayd';
+import { variableSymbol, donationMessage } from '@/lib/spayd';
 import { fmtKm } from '@/lib/stats';
 import DonationCard from '@/app/components/DonationCard';
 import ShareButton from '@/app/components/ShareButton';
@@ -34,7 +34,7 @@ export default async function Statement({ params, searchParams }) {
       <DonationCard
         amount={amount}
         vs={variableSymbol(mesic, athleteId)}
-        message={`Kopec za korunu ${mesic}`}
+        message={donationMessage(mesic, athlete?.payer_name)}
         basePath={`/vypis/${mesic}`}
         isDouble={isDouble}
         recipientId={pickRecipientId(sp?.pro, athlete)}

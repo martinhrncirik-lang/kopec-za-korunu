@@ -2,7 +2,7 @@ import { notFound, redirect } from 'next/navigation';
 import { db, getAthlete } from '@/lib/db';
 import { currentAthleteId } from '@/lib/session';
 import { RATE_CZK_PER_KM } from '@/lib/config';
-import { variableSymbol } from '@/lib/spayd';
+import { variableSymbol, donationMessage } from '@/lib/spayd';
 import { fmtKm } from '@/lib/stats';
 import { validToken, getActivity } from '@/lib/strava';
 import DonationCard from '@/app/components/DonationCard';
@@ -91,7 +91,7 @@ export default async function Svih({ params, searchParams }) {
       <DonationCard
         amount={amount}
         vs={variableSymbol(a.month, athleteId)}
-        message={`Kopec za korunu ${a.start_local.slice(0, 10)}`}
+        message={donationMessage(a.start_local.slice(0, 10), athlete?.payer_name)}
         basePath={`/svih/${id}`}
         isDouble={isDouble}
         recipientId={pickRecipientId(sp?.pro, athlete)}

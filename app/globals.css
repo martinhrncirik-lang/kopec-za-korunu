@@ -131,3 +131,7 @@ h2 { font-size: 1.05rem; margin: 0 0 8px; }
 h1, h2, .photo-km, .big, .stats-grid dd, .donation-title, .section-title { font-family: var(--brand); font-stretch: 88%; letter-spacing: -.01em; }
 h1 { font-weight: 760; }
 .photo-km { font-weight: 800; font-stretch: 82%; font-size: 3.4rem; }
+.payer-name { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.payer-name input { flex: 1 1 200px; font: inherit; padding: 10px 12px; border-radius: 10px; border: 1.5px solid var(--line); background: var(--card); color: var(--ink); }
+.payer-name input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.payer-name .btn { margin-top: 0; }

@@ -61,3 +61,6 @@ alter table athletes add column if not exists default_recipient text not null de
 alter table activities add column if not exists avg_temp numeric;
 alter table activities add column if not exists praise_strong boolean not null default true;
 alter table athletes add column if not exists history_since date;
+
+-- v0.5: jméno plátce do zprávy pro příjemce
+alter table athletes add column if not exists payer_name text;

@@ -103,3 +103,10 @@ test('IBANy všech příjemců mají platný kontrolní součet a sedí s čísl
     assert.equal(r.iban.slice(4), bank + pre.padStart(6, '0') + base.padStart(10, '0'), r.id);
   }
 });
+
+import { donationMessage } from '../lib/spayd.js';
+test('QR: jméno plátce ve zprávě, jméno příjemce v RN, bez diakritiky', () => {
+  const s = buildSpayd({ iban: 'CZ7603000000000076327632', amount: 63, message: donationMessage('2026-10-23', 'Martin Hrnčiřík'), recipientName: 'Člověk v tísni' });
+  assert.equal(s, 'SPD*1.0*ACC:CZ7603000000000076327632*AM:63.00*CC:CZK*RN:Clovek v tisni*MSG:Kopec za korunu 2026-10-23, Martin Hrncirik');
+  assert.ok(s.length < 200);
+});

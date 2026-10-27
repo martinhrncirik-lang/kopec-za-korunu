@@ -36,7 +36,7 @@ export default async function DonationCard({ amount, vs, message, basePath, isDo
 }
 
 async function DonationQr({ r, amount, vs, message, isDouble, toggleHref }) {
-  const spayd = buildSpayd({ iban: r.iban, amount, vs, message });
+  const spayd = buildSpayd({ iban: r.iban, amount, vs, message, recipientName: r.name.replace(/ \(.*\)$/, '') });
   const svg = await QRCode.toString(spayd, { type: 'svg', margin: 1, errorCorrectionLevel: 'M' });
   return (
     <section className="card donation">
