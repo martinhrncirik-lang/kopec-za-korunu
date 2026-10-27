@@ -86,6 +86,19 @@ export default async function Svih({ params, searchParams }) {
         </section>
       )}
 
+      <h2 className="donation-title first">Dar za tuto jízdu: {amount.toLocaleString('cs-CZ')} Kč</h2>
+      <p className="muted small">Navíc k měsíčnímu výpisu. Měsíční výpis ho neodečítá.</p>
+      <DonationCard
+        amount={amount}
+        vs={variableSymbol(a.month, athleteId)}
+        message={`Kopec za korunu ${a.start_local.slice(0, 10)}`}
+        basePath={`/svih/${id}`}
+        isDouble={isDouble}
+        recipientId={pickRecipientId(sp?.pro, athlete)}
+        defaultId={pickRecipientId(null, athlete)}
+      />
+
+      <h2 className="section-title">Detail jízdy</h2>
       <section className="card activity-card">
         <RouteMap polyline={s?.map?.summary_polyline} />
         <dl className="stats-grid">
@@ -98,17 +111,6 @@ export default async function Svih({ params, searchParams }) {
         </a>
       </section>
 
-      <h2 className="donation-title">Dar za tuto jízdu: {amount.toLocaleString('cs-CZ')} Kč</h2>
-      <p className="muted small">Navíc k měsíčnímu výpisu. Měsíční výpis ho neodečítá.</p>
-      <DonationCard
-        amount={amount}
-        vs={variableSymbol(a.month, athleteId)}
-        message={`Kopec za korunu ${a.start_local.slice(0, 10)}`}
-        basePath={`/svih/${id}`}
-        isDouble={isDouble}
-        recipientId={pickRecipientId(sp?.pro, athlete)}
-        defaultId={pickRecipientId(null, athlete)}
-      />
       <ShareButton text={`${a.praise ? a.praise + ' ' : `${fmtKm(km)} km na kole. `}Každý kilometr = koruna na dobrou věc.`} />
       <p><a className="link" href="/">← Zpět</a></p>
     </>
