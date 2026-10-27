@@ -124,7 +124,7 @@ h2 { font-size: 1.05rem; margin: 0 0 8px; }
 .praise-card.soft .praise { font-weight: 500; font-size: 1rem; }
 
 /* Značka: mince s kopcem + Bricolage Grotesque */
-:root { --brand: 'Bricolage Grotesque Variable', system-ui, sans-serif; --gold: #b88a17; --pine: #22503f; }
+:root { --brand: 'Bricolage Grotesque Variable', system-ui, sans-serif; --gold: #b88a17; --pine: #004225; }
 @media (prefers-color-scheme: dark) { :root { --gold: #e3b341; --pine: #e9ece9; } }
 .top { padding: 10px 16px; }
 .brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; }
