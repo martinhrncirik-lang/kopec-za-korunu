@@ -53,12 +53,12 @@ h2 { font-size: 1.05rem; margin: 0 0 8px; }
 
 /* Pás s fotkou nahoře */
 .photo-hero {
-  position: relative; margin: -16px -16px 16px; min-height: 340px;
+  position: relative; margin: 0 0 16px; min-height: 340px;
   display: flex; flex-direction: column; justify-content: space-between;
   background:
     linear-gradient(180deg, rgba(0, 25, 80, .25) 0%, rgba(0, 0, 0, 0) 35%, rgba(0, 0, 0, .15) 60%, rgba(10, 14, 12, .78) 100%),
     url('/hero.jpg') center 62% / cover no-repeat;
-  color: #fff; border-radius: 0 0 22px 22px; overflow: hidden;
+  color: #fff; border-radius: 22px; overflow: hidden;
 }
 .photo-hero.tall { min-height: 62vh; }
 .photo-top { padding: 22px 20px 0; }
@@ -71,9 +71,6 @@ h2 { font-size: 1.05rem; margin: 0 0 8px; }
 .photo-sub { font-size: 1rem; opacity: .95; }
 .btn.block { display: block; text-align: center; margin: 0 0 14px; }
 .intro { padding: 4px 0 16px; }
-@media (min-width: 560px) {
-  .photo-hero { margin: 0 0 16px; border-radius: 22px; }
-}
 
 /* Profilovka a nastavení */
 .photo-top.with-avatar { display: flex; align-items: center; gap: 12px; }
