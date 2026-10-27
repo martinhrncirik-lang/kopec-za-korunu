@@ -7,7 +7,7 @@ function keyToBytes(base64) {
   return Uint8Array.from([...raw].map((c) => c.charCodeAt(0)));
 }
 
-export default function PushButton() {
+export default function PushButton({ compact = false }) {
   const [state, setState] = useState('loading'); // loading | unsupported | ios-install | off | on | denied | error
 
   useEffect(() => {
@@ -53,6 +53,17 @@ export default function PushButton() {
     on: 'Notifikace jsou zapnuté na tomto zařízení.',
     error: 'Zapnutí se nepovedlo, zkuste to znovu.',
   }[state];
+
+  if (compact) {
+    if (state === 'loading' || state === 'on' || state === 'unsupported') return null;
+    return (
+      <section className="card">
+        <h2>Notifikace</h2>
+        {(state === 'off' || state === 'error') && <button className="btn" onClick={enable}>Zapnout notifikace</button>}
+        {msg && <p className="muted small">{msg}</p>}
+      </section>
+    );
+  }
 
   return (
     <div className="push">

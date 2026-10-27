@@ -7,6 +7,7 @@ import PushButton from './components/PushButton';
 import ShareButton from './components/ShareButton';
 import { syncRecent, recentActivities } from '@/lib/sync';
 import { vocative } from '@/lib/vocative';
+import { avatarUrl, ensureStravaAvatar } from '@/lib/avatar';
 
 export const dynamic = 'force-dynamic';
 
@@ -19,7 +20,8 @@ const ERRORS = {
 export default async function Home({ searchParams }) {
   const sp = await searchParams;
   const athleteId = await currentAthleteId();
-  const athlete = athleteId ? await getAthlete(athleteId) : null;
+  let athlete = athleteId ? await getAthlete(athleteId) : null;
+  if (athlete) athlete = await ensureStravaAvatar(athlete);
 
   if (!athlete) {
     return (
@@ -50,8 +52,10 @@ export default async function Home({ searchParams }) {
   return (
     <>
       <section className="photo-hero">
-        <div className="photo-top">
+        <div className="photo-top with-avatar">
+          {avatarUrl(athlete) && <img className="avatar" src={avatarUrl(athlete)} alt="" />}
           <h1>Ahoj{athlete.firstname ? ` ${vocative(athlete.firstname)}` : ''}</h1>
+          <a className="gear" href="/nastaveni" aria-label="Nastavení">⚙</a>
         </div>
         <div className="photo-bottom">
           <p className="photo-label">{monthLabel(month)} zatím</p>
@@ -78,10 +82,7 @@ export default async function Home({ searchParams }) {
         </section>
       )}
 
-      <section className="card">
-        <h2>Notifikace</h2>
-        <PushButton />
-      </section>
+      <PushButton compact />
 
       {months.length > 0 && (
         <section className="card">
@@ -97,8 +98,6 @@ export default async function Home({ searchParams }) {
         <p className="muted small">Čím víc kol, tím víc korun.</p>
         <ShareButton label="Poslat pozvánku" text="Jezdím pro Nadaci rodiny Vlčkových: každý můj kilometr = koruna. Přidej se, jezdit stejně budeš." />
       </section>
-
-      <form action="/api/auth/logout" method="post"><button className="link">Odhlásit</button></form>
     </>
   );
 }

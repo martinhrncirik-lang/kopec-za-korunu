@@ -47,3 +47,9 @@ create table if not exists webhook_events (
   result      text
 );
 alter table webhook_events enable row level security;
+
+-- v0.3: profilový obrázek
+alter table athletes add column if not exists strava_avatar_url text;
+alter table athletes add column if not exists strava_avatar_checked boolean not null default false;
+alter table athletes add column if not exists avatar_url text;
+alter table athletes add column if not exists avatar_source text not null default 'strava';

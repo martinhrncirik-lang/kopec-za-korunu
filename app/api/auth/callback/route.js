@@ -3,6 +3,7 @@ import { cookies } from 'next/headers';
 import { APP_URL } from '@/lib/config';
 import { db } from '@/lib/db';
 import { exchangeCode, backfill } from '@/lib/strava';
+import { cleanStravaUrl } from '@/lib/avatar';
 import { SESSION_COOKIE, SESSION_MAX_AGE, sessionCookieValue } from '@/lib/session';
 
 export async function GET(req) {
@@ -26,6 +27,8 @@ export async function GET(req) {
         access_token: t.access_token,
         refresh_token: t.refresh_token,
         expires_at: t.expires_at,
+        strava_avatar_url: cleanStravaUrl(t.athlete.profile),
+        strava_avatar_checked: true,
       },
       { onConflict: 'strava_id' },
     )
