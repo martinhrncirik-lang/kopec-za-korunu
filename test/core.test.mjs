@@ -52,3 +52,8 @@ test('oslovení v 5. pádě', () => {
     Marek: 'Marku', Jan: 'Jane', Michal: 'Michale', Ondřej: 'Ondřeji', Jana: 'Jano', Lucie: 'Lucie', Karel: 'Karle', Daniel: 'Danieli' };
   for (const [k, v] of Object.entries(cases)) assert.equal(vocative(k), v, k);
 });
+
+import { decodePolyline } from '../lib/polyline.js';
+test('dekódování polyline (příklad z dokumentace Googlu)', () => {
+  assert.deepEqual(decodePolyline('_p~iF~ps|U_ulLnnqC_mqNvxq`@'), [[38.5, -120.2], [40.7, -120.95], [43.252, -126.453]]);
+});
