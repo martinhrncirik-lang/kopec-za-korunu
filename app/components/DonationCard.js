@@ -19,7 +19,7 @@ export default async function DonationCard({ amount, vs, message, basePath, isDo
       <nav className="recipients" aria-label="Komu darovat">
         {RECIPIENTS.map((x) => (
           <a key={x.id} href={href(x.id, isDouble)} className={x.id === r.id ? 'active' : ''} aria-current={x.id === r.id ? 'true' : undefined}>
-            {x.logo && <span className="logo-chip"><img src={x.logo} alt="" /></span>}
+            {x.logo && <span className={`logo-chip${x.logoFill ? ' fill' : ''}`}><img src={x.logo} alt="" /></span>}
             <span>{x.short}{x.id === defaultId && <span className="star" title="Primární příjemce"> ★</span>}</span>
           </a>
         ))}
