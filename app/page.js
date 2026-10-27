@@ -102,7 +102,7 @@ export default async function Home({ searchParams }) {
       <section className="card">
         <h2>Přizvěte kámoše</h2>
         <p className="muted small">Čím víc kol, tím víc korun.</p>
-        <ShareButton label="Poslat pozvánku" text="Jezdím pro dobrou věc: každý můj kilometr = koruna. Přidej se, jezdit stejně budeš." />
+        <ShareButton label="Poslat pozvánku" text="Jezdím, dělám radost sobě a občas i ostatním. Přidej se!" />
       </section>
     </>
   );
