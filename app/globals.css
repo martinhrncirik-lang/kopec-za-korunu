@@ -128,7 +128,7 @@ h2 { font-size: 1.05rem; margin: 0 0 8px; }
 @media (prefers-color-scheme: dark) { :root { --gold: #e3b341; --pine: #e9ece9; } }
 .top { padding: 10px 16px; }
 .brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; }
-.brand-mark { width: 34px; height: 34px; display: block; }
+.brand-mark { width: 36px; height: 36px; display: block; border-radius: 9px; }
 .brand-word { font-family: var(--brand); font-weight: 780; font-stretch: 82%; font-size: 1.32rem; letter-spacing: -.015em; color: var(--pine); line-height: 1; }
 .brand-word span { color: var(--gold); }
 h1, h2, .photo-km, .big, .stats-grid dd, .donation-title, .section-title { font-family: var(--brand); font-stretch: 88%; letter-spacing: -.01em; }
