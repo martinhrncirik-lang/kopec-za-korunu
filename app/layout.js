@@ -1,22 +1,26 @@
+import '@fontsource-variable/bricolage-grotesque/wdth.css';
 import './globals.css';
 
 export const metadata = {
   title: 'Kopec za korunu',
-  description: 'Každý kilometr na kole je koruna pro Nadaci rodiny Vlčkových.',
+  description: 'Každý kilometr na kole je koruna na dobrou věc.',
   manifest: '/manifest.webmanifest',
+  icons: { icon: '/logo.svg', apple: '/apple-touch-icon.png' },
   appleWebApp: { capable: true, title: 'Kopec za korunu', statusBarStyle: 'default' },
 };
 
-export const viewport = { themeColor: '#1f5c4a', width: 'device-width', initialScale: 1 };
+export const viewport = { themeColor: '#183a2e', width: 'device-width', initialScale: 1 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="cs">
-      <head>
-        <link rel="apple-touch-icon" href="/icon.svg" />
-      </head>
       <body>
-        <header className="top"><a href="/">⛰ Kopec za korunu</a></header>
+        <header className="top">
+          <a href="/" className="brand">
+            <img src="/logo.svg" alt="" className="brand-mark" />
+            <span className="brand-word">Kopec <span>za korunu</span></span>
+          </a>
+        </header>
         <main>{children}</main>
       </body>
     </html>

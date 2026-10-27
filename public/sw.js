@@ -5,7 +5,7 @@ self.addEventListener('push', (event) => {
   event.waitUntil(
     self.registration.showNotification(data.title || 'Kopec za korunu', {
       body: data.body || '',
-      icon: '/icon.svg',
+      icon: '/icon-192.png',
       data: { url: data.url || '/' },
     }),
   );

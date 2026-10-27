@@ -122,3 +122,15 @@ h2 { font-size: 1.05rem; margin: 0 0 8px; }
 .section-title { margin: 26px 0 10px; font-size: 1.1rem; }
 .praise-card.soft { border-color: var(--line); background: var(--card); }
 .praise-card.soft .praise { font-weight: 500; font-size: 1rem; }
+
+/* Značka: mince s kopcem + Bricolage Grotesque */
+:root { --brand: 'Bricolage Grotesque Variable', system-ui, sans-serif; --gold: #b88a17; --pine: #183a2e; }
+@media (prefers-color-scheme: dark) { :root { --gold: #e3b341; --pine: #e9ece9; } }
+.top { padding: 10px 16px; }
+.brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; }
+.brand-mark { width: 34px; height: 34px; display: block; }
+.brand-word { font-family: var(--brand); font-weight: 780; font-stretch: 82%; font-size: 1.32rem; letter-spacing: -.015em; color: var(--pine); line-height: 1; }
+.brand-word span { color: var(--gold); }
+h1, h2, .photo-km, .big, .stats-grid dd, .donation-title, .section-title { font-family: var(--brand); font-stretch: 88%; letter-spacing: -.01em; }
+h1 { font-weight: 760; }
+.photo-km { font-weight: 800; font-stretch: 82%; font-size: 3.4rem; }
