@@ -105,6 +105,7 @@ export default async function Svih({ params, searchParams }) {
         message={`Kopec za korunu ${a.start_local.slice(0, 10)}`}
         basePath={`/svih/${id}`}
         isDouble={isDouble}
+        recipientId={sp?.pro}
       />
       <ShareButton text={`${a.praise ? a.praise + ' ' : `${fmtKm(km)} km na kole. `}Každý kilometr = koruna pro Nadaci rodiny Vlčkových.`} />
       <p><a className="link" href="/">← Zpět</a></p>

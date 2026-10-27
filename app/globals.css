@@ -103,3 +103,12 @@ h2 { font-size: 1.05rem; margin: 0 0 8px; }
 .praise-card { border-color: #e8b33c; background: color-mix(in srgb, #e8b33c 12%, var(--card)); }
 .praise-card .praise { margin: 0; }
 .donation-title { margin: 22px 0 2px; font-size: 1.1rem; }
+
+/* Výběr příjemce daru */
+.recipients { display: flex; gap: 6px; margin: 10px 0 12px; flex-wrap: wrap; }
+.recipients a {
+  flex: 1 1 0; min-width: 96px; display: flex; align-items: center; justify-content: center; text-align: center; padding: 10px 8px; border-radius: 10px;
+  border: 1.5px solid var(--line); background: var(--card); color: var(--ink);
+  text-decoration: none; font-weight: 600; font-size: .92rem; line-height: 1.2;
+}
+.recipients a.active { border-color: var(--accent); background: var(--accent); color: var(--accent-ink); }

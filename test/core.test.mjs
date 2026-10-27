@@ -57,3 +57,14 @@ import { decodePolyline } from '../lib/polyline.js';
 test('dekódování polyline (příklad z dokumentace Googlu)', () => {
   assert.deepEqual(decodePolyline('_p~iF~ps|U_ulLnnqC_mqNvxq`@'), [[38.5, -120.2], [40.7, -120.95], [43.252, -126.453]]);
 });
+
+import { RECIPIENTS } from '../lib/recipients.js';
+test('IBANy všech příjemců mají platný kontrolní součet a sedí s číslem účtu', () => {
+  for (const r of RECIPIENTS.filter((x) => x.iban)) {
+    const num = (r.iban.slice(4) + r.iban.slice(0, 4)).replace(/[A-Z]/g, (c) => String(c.charCodeAt(0) - 55));
+    assert.equal(BigInt(num) % 97n, 1n, r.id);
+    const [acc, bank] = r.account.split('/');
+    const [pre, base] = acc.includes('-') ? acc.split('-') : ['0', acc];
+    assert.equal(r.iban.slice(4), bank + pre.padStart(6, '0') + base.padStart(10, '0'), r.id);
+  }
+});

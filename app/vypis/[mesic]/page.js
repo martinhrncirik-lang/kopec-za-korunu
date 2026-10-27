@@ -35,6 +35,7 @@ export default async function Statement({ params, searchParams }) {
         message={`Kopec za korunu ${mesic}`}
         basePath={`/vypis/${mesic}`}
         isDouble={isDouble}
+        recipientId={sp?.pro}
       />
       {count > 0 && (
         <ShareButton text={`${monthLabel(mesic)}: ${fmtKm(km)} km = ${amount} Kč pro Nadaci rodiny Vlčkových. Kopec za korunu.`} />
