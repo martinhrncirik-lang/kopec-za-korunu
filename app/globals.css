@@ -113,3 +113,6 @@ h2 { font-size: 1.05rem; margin: 0 0 8px; }
 }
 .recipients a.active { border-color: var(--accent); background: var(--accent); color: var(--accent-ink); }
 .recipients .star { font-size: .8em; opacity: .8; }
+.recipients a { gap: 8px; flex-direction: column; }
+.logo-chip { width: 34px; height: 34px; border-radius: 9px; background: #fff; display: grid; place-items: center; flex: none; box-shadow: 0 0 0 1px rgba(0,0,0,.06); }
+.logo-chip img { width: 26px; height: 26px; object-fit: contain; display: block; }
