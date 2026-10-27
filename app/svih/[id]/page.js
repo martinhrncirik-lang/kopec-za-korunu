@@ -8,6 +8,7 @@ import { validToken, getActivity } from '@/lib/strava';
 import DonationCard from '@/app/components/DonationCard';
 import ShareButton from '@/app/components/ShareButton';
 import RouteMap from '@/app/components/RouteMap';
+import { pickRecipientId } from '@/lib/recipients';
 
 export const dynamic = 'force-dynamic';
 
@@ -36,9 +37,9 @@ export default async function Svih({ params, searchParams }) {
   if (!a) notFound();
 
   // Živá data ze Stravy; když Strava neodpoví, ukážeme aspoň to, co máme v databázi.
+  const athlete = await getAthlete(athleteId);
   let s = null;
   try {
-    const athlete = await getAthlete(athleteId);
     s = await getActivity(await validToken(athlete), id);
   } catch (e) {
     console.error('activity detail', e);
@@ -105,9 +106,10 @@ export default async function Svih({ params, searchParams }) {
         message={`Kopec za korunu ${a.start_local.slice(0, 10)}`}
         basePath={`/svih/${id}`}
         isDouble={isDouble}
-        recipientId={sp?.pro}
+        recipientId={pickRecipientId(sp?.pro, athlete)}
+        defaultId={pickRecipientId(null, athlete)}
       />
-      <ShareButton text={`${a.praise ? a.praise + ' ' : `${fmtKm(km)} km na kole. `}Každý kilometr = koruna pro Nadaci rodiny Vlčkových.`} />
+      <ShareButton text={`${a.praise ? a.praise + ' ' : `${fmtKm(km)} km na kole. `}Každý kilometr = koruna na dobrou věc.`} />
       <p><a className="link" href="/">← Zpět</a></p>
     </>
   );

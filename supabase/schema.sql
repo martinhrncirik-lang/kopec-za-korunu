@@ -53,3 +53,6 @@ alter table athletes add column if not exists strava_avatar_url text;
 alter table athletes add column if not exists strava_avatar_checked boolean not null default false;
 alter table athletes add column if not exists avatar_url text;
 alter table athletes add column if not exists avatar_source text not null default 'strava';
+
+-- v0.3: primární příjemce daru
+alter table athletes add column if not exists default_recipient text not null default 'nrv';

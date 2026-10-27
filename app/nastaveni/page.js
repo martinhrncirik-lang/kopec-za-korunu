@@ -4,6 +4,8 @@ import { currentAthleteId } from '@/lib/session';
 import { ensureStravaAvatar } from '@/lib/avatar';
 import AvatarSettings from '@/app/components/AvatarSettings';
 import PushButton from '@/app/components/PushButton';
+import RecipientSettings from '@/app/components/RecipientSettings';
+import { RECIPIENT_CHOICES, getRecipient } from '@/lib/recipients';
 
 export const dynamic = 'force-dynamic';
 
@@ -24,6 +26,11 @@ export default async function Settings() {
           stravaUrl={athlete.strava_avatar_url}
           customUrl={athlete.avatar_url}
         />
+      </section>
+      <section className="card">
+        <h2>Komu daruji</h2>
+        <p className="muted small">Primární příjemce je předvybraný u měsíčního výpisu i u každé jízdy. U konkrétního daru ho můžete vždy změnit.</p>
+        <RecipientSettings choices={RECIPIENT_CHOICES} initial={getRecipient(athlete.default_recipient).id} />
       </section>
       <section className="card">
         <h2>Notifikace</h2>

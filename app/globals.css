@@ -112,3 +112,4 @@ h2 { font-size: 1.05rem; margin: 0 0 8px; }
   text-decoration: none; font-weight: 600; font-size: .92rem; line-height: 1.2;
 }
 .recipients a.active { border-color: var(--accent); background: var(--accent); color: var(--accent-ink); }
+.recipients .star { font-size: .8em; opacity: .8; }

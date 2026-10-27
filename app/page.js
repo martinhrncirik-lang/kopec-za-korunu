@@ -8,6 +8,7 @@ import ShareButton from './components/ShareButton';
 import { syncRecent, recentActivities } from '@/lib/sync';
 import { vocative } from '@/lib/vocative';
 import { avatarUrl, ensureStravaAvatar } from '@/lib/avatar';
+import { getRecipient } from '@/lib/recipients';
 
 export const dynamic = 'force-dynamic';
 
@@ -32,7 +33,7 @@ export default async function Home({ searchParams }) {
           </div>
         </section>
         <section className="intro">
-          <p>Jezdíte jako obvykle. Kilometry ze Stravy se sečtou a jednou za měsíc dostanete výpis s QR kódem na dar pro Nadaci rodiny Vlčkových.</p>
+          <p>Jezdíte jako obvykle. Kilometry ze Stravy se sečtou a jednou za měsíc dostanete výpis s QR kódem na dar. Vyberete si, komu: Nadaci rodiny Vlčkových, Člověku v tísni, nebo Paměti národa.</p>
           {sp?.chyba && <p className="error">{ERRORS[sp.chyba] || 'Něco se pokazilo.'}</p>}
           <a className="btn strava" href="/api/auth/login">Připojit přes Stravu</a>
         </section>
@@ -60,7 +61,7 @@ export default async function Home({ searchParams }) {
         <div className="photo-bottom">
           <p className="photo-label">{monthLabel(month)} zatím</p>
           <p className="photo-km">{fmtKm(km)} km</p>
-          <p className="photo-sub">{count} {count === 1 ? 'aktivita' : count >= 2 && count <= 4 ? 'aktivity' : 'aktivit'} · {czk.toLocaleString('cs-CZ')} Kč pro NRV</p>
+          <p className="photo-sub">{count} {count === 1 ? 'aktivita' : count >= 2 && count <= 4 ? 'aktivity' : 'aktivit'} · {czk.toLocaleString('cs-CZ')} Kč pro {getRecipient(athlete.default_recipient).forWhom}</p>
         </div>
       </section>
 
@@ -96,7 +97,7 @@ export default async function Home({ searchParams }) {
       <section className="card">
         <h2>Přizvěte kámoše</h2>
         <p className="muted small">Čím víc kol, tím víc korun.</p>
-        <ShareButton label="Poslat pozvánku" text="Jezdím pro Nadaci rodiny Vlčkových: každý můj kilometr = koruna. Přidej se, jezdit stejně budeš." />
+        <ShareButton label="Poslat pozvánku" text="Jezdím pro dobrou věc: každý můj kilometr = koruna. Přidej se, jezdit stejně budeš." />
       </section>
     </>
   );

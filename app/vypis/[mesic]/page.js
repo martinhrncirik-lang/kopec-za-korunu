@@ -1,5 +1,6 @@
 import { notFound, redirect } from 'next/navigation';
-import { monthSummary } from '@/lib/db';
+import { monthSummary, getAthlete } from '@/lib/db';
+import { pickRecipientId } from '@/lib/recipients';
 import { currentAthleteId } from '@/lib/session';
 import { isMonth, monthLabel } from '@/lib/months';
 import { RATE_CZK_PER_KM } from '@/lib/config';
@@ -17,6 +18,7 @@ export default async function Statement({ params, searchParams }) {
   const athleteId = await currentAthleteId();
   if (!athleteId) redirect('/');
 
+  const athlete = await getAthlete(athleteId);
   const { km, count } = await monthSummary(athleteId, mesic);
   const isDouble = sp?.x === '2';
   const base = Math.round(km * RATE_CZK_PER_KM);
@@ -35,10 +37,11 @@ export default async function Statement({ params, searchParams }) {
         message={`Kopec za korunu ${mesic}`}
         basePath={`/vypis/${mesic}`}
         isDouble={isDouble}
-        recipientId={sp?.pro}
+        recipientId={pickRecipientId(sp?.pro, athlete)}
+        defaultId={pickRecipientId(null, athlete)}
       />
       {count > 0 && (
-        <ShareButton text={`${monthLabel(mesic)}: ${fmtKm(km)} km = ${amount} Kč pro Nadaci rodiny Vlčkových. Kopec za korunu.`} />
+        <ShareButton text={`${monthLabel(mesic)}: ${fmtKm(km)} km = ${amount} Kč na dobrou věc. Kopec za korunu.`} />
       )}
     </>
   );

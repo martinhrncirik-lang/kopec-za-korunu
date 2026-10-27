@@ -4,11 +4,11 @@ import { RECIPIENTS, getRecipient } from '@/lib/recipients';
 
 // Výběr příjemce + QR Platba + tlačítko 2× dar.
 // Volba se nese v adrese (?pro=cvt&x=2), takže funguje bez JavaScriptu a jde sdílet.
-export default async function DonationCard({ amount, vs, message, basePath, isDouble, recipientId }) {
+export default async function DonationCard({ amount, vs, message, basePath, isDouble, recipientId, defaultId = 'nrv' }) {
   const r = getRecipient(recipientId);
   const href = (pro, dbl) => {
     const p = new URLSearchParams();
-    if (pro !== 'nrv') p.set('pro', pro);
+    if (pro !== defaultId) p.set('pro', pro);
     if (dbl) p.set('x', '2');
     const q = p.toString();
     return q ? `${basePath}?${q}` : basePath;
@@ -19,7 +19,7 @@ export default async function DonationCard({ amount, vs, message, basePath, isDo
       <nav className="recipients" aria-label="Komu darovat">
         {RECIPIENTS.map((x) => (
           <a key={x.id} href={href(x.id, isDouble)} className={x.id === r.id ? 'active' : ''} aria-current={x.id === r.id ? 'true' : undefined}>
-            {x.short}
+            {x.short}{x.id === defaultId && <span className="star" title="Primární příjemce"> ★</span>}
           </a>
         ))}
       </nav>
