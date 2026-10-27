@@ -9,7 +9,7 @@ export const metadata = {
   appleWebApp: { capable: true, title: 'Kopec za korunu', statusBarStyle: 'default' },
 };
 
-export const viewport = { themeColor: '#183a2e', width: 'device-width', initialScale: 1 };
+export const viewport = { themeColor: '#22503f', width: 'device-width', initialScale: 1 };
 
 export default function RootLayout({ children }) {
   return (
