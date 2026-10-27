@@ -56,3 +56,8 @@ alter table athletes add column if not exists avatar_source text not null defaul
 
 -- v0.3: primární příjemce daru
 alter table athletes add column if not exists default_recipient text not null default 'nrv';
+
+-- v0.4: pochvaly
+alter table activities add column if not exists avg_temp numeric;
+alter table activities add column if not exists praise_strong boolean not null default true;
+alter table athletes add column if not exists history_since date;

@@ -6,6 +6,8 @@ import { fmtKm } from '@/lib/stats';
 import PushButton from './components/PushButton';
 import ShareButton from './components/ShareButton';
 import { syncRecent, recentActivities } from '@/lib/sync';
+import { backfill } from '@/lib/strava';
+import { after } from 'next/server';
 import { vocative } from '@/lib/vocative';
 import { avatarUrl, ensureStravaAvatar } from '@/lib/avatar';
 import { getRecipient } from '@/lib/recipients';
@@ -41,6 +43,9 @@ export default async function Home({ searchParams }) {
     );
   }
 
+  // Jednorázově: historie od začátku roku pro uživatele z doby před v0.4 (na pozadí).
+  if (!athlete.history_since) after(() => backfill(athlete).catch((e) => console.error('backfill', e)));
+
   // Pojistka: doplní jízdy, které nedorazily přes webhook.
   try { await syncRecent(athlete); } catch (e) { console.error('sync', e); }
 
@@ -75,7 +80,7 @@ export default async function Home({ searchParams }) {
               <li key={r.strava_id}>
                 <a href={`/svih/${r.strava_id}`}>
                   {new Date(r.start_local + 'Z').toLocaleDateString('cs-CZ', { day: 'numeric', month: 'numeric', timeZone: 'UTC' })}
-                  {' · '}{fmtKm(r.distance_m / 1000)} km{r.praise ? ' · ⭐ švih' : ''}
+                  {' · '}{fmtKm(r.distance_m / 1000)} km{r.praise ? (r.praise_strong === false ? ' · 👍' : ' · ⭐ švih') : ''}
                 </a>
               </li>
             ))}

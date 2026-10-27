@@ -81,8 +81,8 @@ export default async function Svih({ params, searchParams }) {
       <h1 className="activity-title">{s?.name || 'Aktivita'}</h1>
 
       {a.praise && (
-        <section className="card praise-card">
-          <p className="praise">⭐ {a.praise}</p>
+        <section className={`card praise-card${a.praise_strong === false ? ' soft' : ''}`}>
+          <p className="praise">{a.praise_strong === false ? '👍' : '⭐'} {a.praise}</p>
         </section>
       )}
 

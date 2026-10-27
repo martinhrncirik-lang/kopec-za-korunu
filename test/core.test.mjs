@@ -25,25 +25,60 @@ test('předchozí měsíc přes přelom roku', () => {
   assert.equal(previousMonth('2027-01'), '2026-12');
 });
 
-const ride = (km, elev = 0) => ({ sport_type: 'Ride', distance_m: km * 1000, elevation_m: elev, start_local: '2026-10-20T08:00:00' });
+const ride = (km, elev = 0, start = '2026-10-20T08:00:00', extra = {}) => ({ sport_type: 'Ride', distance_m: km * 1000, elevation_m: elev, start_local: start, ...extra });
+const hist = [ride(40), ride(55), ride(60, 500), ride(30), ride(45)];
 
-test('málo historie = žádná pochvala', () => {
-  assert.equal(judge(ride(80), [ride(20), ride(30)], [ride(20)]), null);
+test('málo historie a nic zvláštního = žádná pochvala', () => {
+  assert.equal(judge(ride(30), { prev12w: [ride(20)] }), null);
 });
 
-test('nejdelší jízda za 12 týdnů', () => {
-  const prev = [ride(40), ride(55), ride(60), ride(30), ride(45)];
-  assert.match(judge(ride(72), prev, prev), /Nejdelší jízda.*72 km.*o 12 km.*60 km/);
+test('nejdelší jízda všech dob má přednost před stovkou', () => {
+  const p = judge(ride(150), { prev12w: hist, allTimeBiggestRideM: 140000 });
+  assert.equal(p.kind, 'alltime'); assert.ok(p.strong); assert.match(p.text, /o 10 km víc.*140 km/);
+  // Strava už jízdu započítala → rovnost je taky rekord
+  assert.equal(judge(ride(150), { allTimeBiggestRideM: 150000 }).kind, 'alltime');
+  // kratší než rekord → ne
+  assert.notEqual(judge(ride(150), { allTimeBiggestRideM: 200000 }).kind, 'alltime');
 });
 
-test('první stovka v sezoně', () => {
-  const prev = [ride(40), ride(55), ride(60), ride(30), ride(45)];
-  assert.match(judge(ride(104), prev, prev), /První stovka/);
+test('každá stovka, s pořadím v roce', () => {
+  const p = judge(ride(104), { prev12w: hist, hundredsBefore: 2 });
+  assert.equal(p.kind, 'hundred'); assert.match(p.text, /Stovka! 104 km.*Už 3\. letos/);
 });
 
-test('převýšení', () => {
-  const prev = [ride(60, 400), ride(55, 300), ride(70, 500), ride(65, 200), ride(68, 350)];
-  assert.match(judge(ride(50, 900), prev, prev), /převýšení.*900 m.*o 400 m/);
+test('tisíc výškových metrů', () => {
+  assert.equal(judge(ride(70, 1200), { prev12w: hist }).kind, 'climb1000');
+});
+
+test('nejdelší za 12 týdnů a převýšení za 12 týdnů', () => {
+  assert.match(judge(ride(72), { prev12w: hist }).text, /Nejdelší jízda.*72 km.*o 12 km.*60 km/);
+  assert.match(judge(ride(50, 900), { prev12w: hist }).text, /převýšení.*900 m.*o 400 m/);
+});
+
+test('série dní v řadě: 3, 5, 10 a jen první aktivita dne', () => {
+  const days = ['2026-10-18', '2026-10-19'];
+  assert.match(judge(ride(20, 0, '2026-10-20T08:00:00'), { prevDays: days }).text, /^3 dní v řadě.*od 18\. 10\./);
+  assert.equal(judge(ride(20, 0, '2026-10-20T08:00:00'), { prevDays: [...days, '2026-10-20'] }), null);
+  assert.equal(judge(ride(20, 0, '2026-10-20T08:00:00'), { prevDays: ['2026-10-19'] }), null); // 2 dny = nic
+});
+
+test('roční milník po 1000 km', () => {
+  const p = judge(ride(30), { ytdBeforeM: 2985000 });
+  assert.equal(p.kind, 'milestone'); assert.match(p.text, /Letos už 3\s000 km.*3\s000 Kč/);
+  assert.equal(judge(ride(10), { ytdBeforeM: 2985000 }), null);
+});
+
+test('slabší pochvaly: zima, ráno, návrat – bez notifikace', () => {
+  const w = judge(ride(20, 0, '2026-11-20T08:00:00', { avg_temp: 1 }), {});
+  assert.equal(w.kind, 'winter'); assert.equal(w.strong, false);
+  assert.equal(judge(ride(20, 0, '2026-10-20T05:42:00'), {}).kind, 'early');
+  const c = judge(ride(20, 0, '2026-10-20T08:00:00'), { lastBefore: '2026-10-01' });
+  assert.equal(c.kind, 'comeback'); assert.match(c.text, /po 19 dnech/);
+});
+
+test('silná pochvala vyhraje nad slabou (žádná inflace)', () => {
+  const p = judge(ride(104, 0, '2026-11-20T05:30:00', { avg_temp: 0 }), { lastBefore: '2026-10-01' });
+  assert.equal(p.kind, 'hundred');
 });
 
 import { vocative } from '../lib/vocative.js';

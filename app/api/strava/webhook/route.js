@@ -1,7 +1,7 @@
 import { after } from 'next/server';
 import { APP_URL, RATE_CZK_PER_KM } from '@/lib/config';
 import { db, getAthleteByStravaId, monthSummary } from '@/lib/db';
-import { validToken, getActivity, toRow } from '@/lib/strava';
+import { validToken, getActivity, getAthleteStats, toRow } from '@/lib/strava';
 import { evaluateActivity, fmtKm } from '@/lib/stats';
 import { notifyAthlete } from '@/lib/push';
 
@@ -84,14 +84,20 @@ async function handle(ev) {
   // Notifikace jen u nové aktivity, ne při každé editaci názvu.
   if (ev.aspect_type !== 'create' || existing) return `uloženo bez notifikace: ${row.sport_type} ${fmtKm(row.distance_m / 1000)} km`;
 
-  const praise = await evaluateActivity(row);
+  // Statistiky Stravy (nejdelší jízda všech dob) – jen u kola, chyba nevadí
+  let stats = null;
+  if (!['Run', 'TrailRun'].includes(row.sport_type)) {
+    try { stats = await getAthleteStats(token, athlete.strava_id); } catch (e) { console.error('stats', e.status); }
+  }
+  const p = await evaluateActivity(row, { stats });
+  const praise = p?.text;
   const km = row.distance_m / 1000;
   const { km: monthKm } = await monthSummary(athlete.id, row.month);
   const monthCzk = Math.round(monthKm * RATE_CZK_PER_KM);
 
   let sent;
-  if (praise) {
-    await db().from('activities').update({ praise }).eq('strava_id', row.strava_id);
+  if (p) await db().from('activities').update({ praise: p.text, praise_strong: p.strong }).eq('strava_id', row.strava_id);
+  if (p?.strong) {
     sent = await notifyAthlete(athlete.id, {
       title: 'Tohle byl švih! 🚴',
       body: `${praise} Pošlete za něj dar?`,
@@ -100,9 +106,9 @@ async function handle(ev) {
   } else {
     sent = await notifyAthlete(athlete.id, {
       title: `+${fmtKm(km)} km pro NRV`,
-      body: `Tento měsíc máte ${fmtKm(monthKm)} km, tedy ${monthCzk} Kč.`,
-      url: `${APP_URL}/`,
+      body: `${p ? p.text + ' ' : ''}Tento měsíc máte ${fmtKm(monthKm)} km, tedy ${monthCzk} Kč.`,
+      url: `${APP_URL}/svih/${row.strava_id}`,
     });
   }
-  return `uloženo, ${praise ? 'pochvala, ' : ''}notifikací odesláno: ${sent}`;
+  return `uloženo, ${p ? `pochvala (${p.kind}${p.strong ? '' : ', slabší'}), ` : ''}notifikací odesláno: ${sent}`;
 }
