@@ -3,7 +3,7 @@
   --card: #ffffff;
   --ink: #1d2320;
   --muted: #66706b;
-  --accent: #1f5c4a;
+  --accent: #05480d;
   --accent-ink: #ffffff;
   --strava: #fc4c02;
   --line: #e2ded5;
@@ -12,7 +12,7 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --bg: #121614; --card: #1b201d; --ink: #e9ece9; --muted: #98a29c;
-    --accent: #5fb394; --accent-ink: #0d1411; --line: #2b322e; --error: #f2b8b5;
+    --accent: #5cbf72; --accent-ink: #0d1411; --line: #2b322e; --error: #f2b8b5;
   }
 }
 * { box-sizing: border-box; }
