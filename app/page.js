@@ -1,6 +1,6 @@
 import { getAthlete, monthSummary, monthsWithData } from '@/lib/db';
 import { currentAthleteId } from '@/lib/session';
-import { currentMonth, monthLabel } from '@/lib/months';
+import { currentMonth, previousMonth, monthLabel } from '@/lib/months';
 import { RATE_CZK_PER_KM } from '@/lib/config';
 import { fmtKm } from '@/lib/stats';
 import PushButton from './components/PushButton';
@@ -54,6 +54,10 @@ export default async function Home({ searchParams }) {
   const recent = await recentActivities(athlete.id, 5);
   const czk = Math.round(km * RATE_CZK_PER_KM);
   const months = (await monthsWithData(athlete.id)).filter((m) => m !== month).slice(0, 6);
+  // Prvních 10 dní v měsíci: karta s výpisem za minulý měsíc (pojistka, kdyby notifikace nedorazila).
+  const dayOfMonth = Number(new Intl.DateTimeFormat('cs-CZ', { timeZone: 'Europe/Prague', day: 'numeric' }).format(new Date()));
+  const lastMonth = previousMonth(month);
+  const last = dayOfMonth <= 10 ? await monthSummary(athlete.id, lastMonth) : null;
 
   return (
     <>
@@ -69,6 +73,13 @@ export default async function Home({ searchParams }) {
           <p className="photo-sub">{count} {count === 1 ? 'aktivita' : count >= 2 && count <= 4 ? 'aktivity' : 'aktivit'} · {czk.toLocaleString('cs-CZ')} Kč pro {getRecipient(athlete.default_recipient).forWhom}</p>
         </div>
       </section>
+
+      {last && last.count > 0 && (
+        <a className="card statement-ready" href={`/vypis/${lastMonth}`}>
+          <span className="statement-title">Výpis za {monthLabel(lastMonth).toLowerCase()} je připravený</span>
+          <span>{fmtKm(last.km)} km = {Math.round(last.km * RATE_CZK_PER_KM).toLocaleString('cs-CZ')} Kč · otevřít QR kód</span>
+        </a>
+      )}
 
       <a className="btn block" href={`/vypis/${month}`}>Darovat už teď</a>
 

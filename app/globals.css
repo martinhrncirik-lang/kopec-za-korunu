@@ -135,3 +135,6 @@ h1 { font-weight: 760; }
 .payer-name input { flex: 1 1 200px; font: inherit; padding: 10px 12px; border-radius: 10px; border: 1.5px solid var(--line); background: var(--card); color: var(--ink); }
 .payer-name input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 .payer-name .btn { margin-top: 0; }
+.statement-ready { display: block; text-decoration: none; color: var(--ink); border: 2px solid var(--gold); background: color-mix(in srgb, #e3b341 14%, var(--card)); }
+.statement-ready span { display: block; }
+.statement-title { font-family: var(--brand); font-weight: 760; font-size: 1.15rem; margin-bottom: 2px; }
