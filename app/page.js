@@ -11,6 +11,7 @@ import { after } from 'next/server';
 import { vocative } from '@/lib/vocative';
 import { avatarUrl, ensureStravaAvatar } from '@/lib/avatar';
 import { getRecipient } from '@/lib/recipients';
+import { monthVerdictFor } from '@/lib/monthly';
 
 export const dynamic = 'force-dynamic';
 
@@ -58,6 +59,8 @@ export default async function Home({ searchParams }) {
   const dayOfMonth = Number(new Intl.DateTimeFormat('cs-CZ', { timeZone: 'Europe/Prague', day: 'numeric' }).format(new Date()));
   const lastMonth = previousMonth(month);
   const last = dayOfMonth <= 10 ? await monthSummary(athlete.id, lastMonth) : null;
+  let verdict = null;
+  if (last?.count) { try { verdict = await monthVerdictFor(athlete.id, lastMonth); } catch (e) { console.error('verdict', e); } }
 
   return (
     <>
@@ -78,6 +81,7 @@ export default async function Home({ searchParams }) {
         <a className="card statement-ready" href={`/vypis/${lastMonth}`}>
           <span className="statement-title">Výpis za {monthLabel(lastMonth).toLowerCase()} je připravený</span>
           <span>{fmtKm(last.km)} km = {Math.round(last.km * RATE_CZK_PER_KM).toLocaleString('cs-CZ')} Kč · otevřít QR kód</span>
+          {verdict && <span className="statement-verdict">{verdict}</span>}
         </a>
       )}
 

@@ -1,6 +1,8 @@
 import { notFound, redirect } from 'next/navigation';
 import { monthSummary, getAthlete } from '@/lib/db';
 import { pickRecipientId } from '@/lib/recipients';
+import { monthVerdictFor } from '@/lib/monthly';
+import { currentMonth } from '@/lib/months';
 import { currentAthleteId } from '@/lib/session';
 import { isMonth, monthLabel } from '@/lib/months';
 import { RATE_CZK_PER_KM } from '@/lib/config';
@@ -20,6 +22,8 @@ export default async function Statement({ params, searchParams }) {
 
   const athlete = await getAthlete(athleteId);
   const { km, count } = await monthSummary(athleteId, mesic);
+  let verdict = null;
+  if (count && mesic < currentMonth()) { try { verdict = await monthVerdictFor(athleteId, mesic); } catch (e) { console.error('verdict', e); } }
   const isDouble = sp?.x === '2';
   const base = Math.round(km * RATE_CZK_PER_KM);
   const amount = base * (isDouble ? 2 : 1);
@@ -30,6 +34,7 @@ export default async function Statement({ params, searchParams }) {
       <section className="card stat">
         <p className="big">{fmtKm(km)} km</p>
         <p>{count} aktivit · {RATE_CZK_PER_KM} Kč/km · {base.toLocaleString('cs-CZ')} Kč</p>
+        {verdict && <p className="statement-verdict">{verdict}</p>}
       </section>
       <DonationCard
         amount={amount}

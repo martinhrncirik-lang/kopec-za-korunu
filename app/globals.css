@@ -138,3 +138,4 @@ h1 { font-weight: 760; }
 .statement-ready { display: block; text-decoration: none; color: var(--ink); border: 2px solid var(--gold); background: color-mix(in srgb, #e3b341 14%, var(--card)); }
 .statement-ready span { display: block; }
 .statement-title { font-family: var(--brand); font-weight: 760; font-size: 1.15rem; margin-bottom: 2px; }
+.statement-verdict { margin-top: 8px; font-weight: 600; line-height: 1.4; }

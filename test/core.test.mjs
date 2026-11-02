@@ -110,3 +110,39 @@ test('QR: jméno plátce ve zprávě, jméno příjemce v RN, bez diakritiky', (
   assert.equal(s, 'SPD*1.0*ACC:CZ7603000000000076327632*AM:63.00*CC:CZK*RN:Clovek v tisni*MSG:Kopec za korunu 2026-10-23, Martin Hrncirik');
   assert.ok(s.length < 200);
 });
+
+import { monthVerdict } from '../lib/monthly.js';
+const M = (month, km, elev = 0, days = 5) => ({ month, km, elev, days });
+test('měsíční věta: nejlepší měsíc', () => {
+  assert.equal(monthVerdict(M('2026-10', 700), [M('2026-07', 616), M('2026-08', 500), M('2026-09', 400)], '2026-01'),
+    'Nejvíc kilometrů od ledna. Říjen překonal dosavadní maximum z července o 84 km.');
+});
+test('měsíční věta: pořadí', () => {
+  assert.equal(monthVerdict(M('2026-10', 550), [M('2026-06', 300), M('2026-07', 700), M('2026-08', 600), M('2026-09', 400)], '2026-01'),
+    'Třetí nejlepší měsíc od ledna, za červencem a srpnem.');
+});
+test('měsíční věta: nad průměrem', () => {
+  const o = [M('2026-03', 100), M('2026-04', 900), M('2026-05', 800), M('2026-06', 700), M('2026-07', 650), M('2026-08', 50), M('2026-09', 500)];
+  assert.match(monthVerdict(M('2026-10', 600), o, '2026-01'), /^O 14 % víc, než je váš měsíční průměr od ledna \(529 km\)\.$/);
+});
+test('měsíční věta: víc než minulý měsíc, zima', () => {
+  const o = [M('2026-01', 300), M('2026-02', 400), M('2026-07', 900), M('2026-08', 900), M('2026-09', 800), M('2026-10', 100)];
+  assert.equal(monthVerdict(M('2026-11', 350), o, '2026-01'), 'O 250 km víc než v říjnu. Zima vás nezastavila.');
+});
+test('měsíční věta: nejlepší zimní měsíc', () => {
+  const o = [M('2026-01', 300), M('2026-02', 400), M('2026-07', 900), M('2026-08', 900), M('2026-09', 800), M('2026-10', 500)];
+  assert.match(monthVerdict(M('2026-11', 450), o, '2026-01'), /^Nejlepší zimní měsíc od ledna: o 50 km víc/);
+});
+test('měsíční věta: převýšení a pravidelnost', () => {
+  const o = [M('2026-07', 900, 6000, 10), M('2026-08', 900, 6000, 10), M('2026-09', 800, 5000, 10)];
+  assert.match(monthVerdict(M('2026-10', 500, 7240, 9), o, '2026-01'), /Nejvíc nastoupaných metrů od ledna: 7\s240 m, to je 1,5× Mont Blanc/);
+  assert.equal(monthVerdict(M('2026-10', 500, 100, 14), o, '2026-01'), 'Aktivní 14 dní z 31. Nejčastěji od ledna.');
+});
+test('měsíční věta: poctivý pokles a bez historie', () => {
+  const o = [M('2026-07', 900, 6000, 10), M('2026-08', 900, 6000, 10), M('2026-09', 532, 5000, 10)];
+  assert.match(monthVerdict(M('2026-10', 412, 100, 5), o, '2026-01'), /^O 120 km méně než v září\. Ale 412 Kč je pořád 412 Kč, které by jinak nebyly\.$/);
+  assert.equal(monthVerdict(M('2026-10', 412), [], '2026-10'), '412 km = 412 Kč, které by jinak nebyly.');
+});
+test('měsíční věta: rok jiný než začátek historie', () => {
+  assert.match(monthVerdict(M('2027-01', 900), [M('2026-11', 300), M('2026-12', 200)], '2026-11'), /od listopadu 2026/);
+});

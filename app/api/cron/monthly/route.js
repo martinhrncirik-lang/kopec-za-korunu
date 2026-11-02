@@ -3,6 +3,7 @@ import { db, monthSummary } from '@/lib/db';
 import { notifyAthlete } from '@/lib/push';
 import { currentMonth, previousMonth, monthLabel } from '@/lib/months';
 import { fmtKm } from '@/lib/stats';
+import { monthVerdictFor } from '@/lib/monthly';
 
 // Spouští Vercel Cron 1. den v měsíci (viz vercel.json).
 // Vercel posílá hlavičku Authorization: Bearer <CRON_SECRET>.
@@ -37,9 +38,11 @@ export async function GET(req) {
       const { km, count } = await monthSummary(a.id, month);
       if (count === 0) { details.push(`#${a.id}: 0 aktivit`); continue; }
       const czk = Math.round(km * RATE_CZK_PER_KM);
+      let verdict = null;
+      try { verdict = await monthVerdictFor(a.id, month); } catch (e) { console.error('verdict', e); }
       const sent = await notifyAthlete(a.id, {
         title: `${monthLabel(month)}: ${fmtKm(km)} km = ${czk} Kč`,
-        body: 'Výpis a QR kód pro dar jsou připravené. Nebo rovnou dvojnásobek?',
+        body: `${verdict ? verdict + ' ' : ''}Výpis a QR kód pro dar jsou připravené.`,
         url: `${APP_URL}/vypis/${month}`,
       });
       notified += sent;
