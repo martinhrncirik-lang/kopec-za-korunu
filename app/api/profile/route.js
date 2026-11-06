@@ -30,6 +30,10 @@ export async function POST(req) {
   if (body.payer_name !== undefined) {
     update.payer_name = String(body.payer_name).replace(/\*/g, '').trim().slice(0, 40);
   }
+  if (body.notify_mode !== undefined) {
+    if (!['svih', 'all', 'monthly'].includes(body.notify_mode)) return new Response('Bad request', { status: 400 });
+    update.notify_mode = body.notify_mode;
+  }
   if (!Object.keys(update).length) return new Response('Bad request', { status: 400 });
   const { error } = await db().from('athletes').update(update).eq('id', athleteId);
   if (error) return new Response('DB error', { status: 500 });

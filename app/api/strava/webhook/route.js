@@ -4,6 +4,7 @@ import { db, getAthleteByStravaId, monthSummary } from '@/lib/db';
 import { validToken, getActivity, getAthleteStats, toRow } from '@/lib/strava';
 import { evaluateActivity, fmtKm } from '@/lib/stats';
 import { notifyAthlete } from '@/lib/push';
+import { getRecipient } from '@/lib/recipients';
 
 // GET: Strava ověřuje webhook při registraci (jednorázově).
 export async function GET(req) {
@@ -97,18 +98,21 @@ async function handle(ev) {
 
   let sent;
   if (p) await db().from('activities').update({ praise: p.text, praise_strong: p.strong }).eq('strava_id', row.strava_id);
-  if (p?.strong) {
+  // Režim notifikací (Nastavení): 'svih' = jen švih (výchozí), 'all' = po každé jízdě, 'monthly' = jen měsíční výpis
+  const mode = athlete.notify_mode || 'svih';
+  sent = 0;
+  if (p?.strong && mode !== 'monthly') {
     sent = await notifyAthlete(athlete.id, {
       title: 'Tohle byl švih! 🚴',
       body: `${praise} Pošlete za něj dar?`,
       url: `${APP_URL}/svih/${row.strava_id}`,
     });
-  } else {
+  } else if (mode === 'all') {
     sent = await notifyAthlete(athlete.id, {
-      title: `+${fmtKm(km)} km pro NRV`,
+      title: `+${fmtKm(km)} km pro ${getRecipient(athlete.default_recipient).forWhom}`,
       body: `${p ? p.text + ' ' : ''}Tento měsíc máte ${fmtKm(monthKm)} km, tedy ${monthCzk} Kč.`,
       url: `${APP_URL}/svih/${row.strava_id}`,
     });
   }
-  return `uloženo, ${p ? `pochvala (${p.kind}${p.strong ? '' : ', slabší'}), ` : ''}notifikací odesláno: ${sent}`;
+  return `uloženo, ${p ? `pochvala (${p.kind}${p.strong ? '' : ', slabší'}), ` : ''}režim ${mode}, notifikací odesláno: ${sent}`;
 }

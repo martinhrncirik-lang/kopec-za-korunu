@@ -64,3 +64,6 @@ alter table athletes add column if not exists history_since date;
 
 -- v0.5: jméno plátce do zprávy pro příjemce
 alter table athletes add column if not exists payer_name text;
+
+-- v0.6: režim notifikací ('svih' = jen švih, 'all' = po každé jízdě, 'monthly' = jen měsíční výpis)
+alter table athletes add column if not exists notify_mode text not null default 'svih';

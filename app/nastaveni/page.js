@@ -6,6 +6,7 @@ import AvatarSettings from '@/app/components/AvatarSettings';
 import PushButton from '@/app/components/PushButton';
 import RecipientSettings from '@/app/components/RecipientSettings';
 import PayerNameSetting from '@/app/components/PayerNameSetting';
+import NotifyModeSetting from '@/app/components/NotifyModeSetting';
 import { RECIPIENT_CHOICES, getRecipient } from '@/lib/recipients';
 
 export const dynamic = 'force-dynamic';
@@ -41,6 +42,7 @@ export default async function Settings() {
       <section className="card">
         <h2>Notifikace</h2>
         <PushButton />
+        <NotifyModeSetting initial={athlete.notify_mode || 'svih'} />
       </section>
       <p><a className="link" href="/">← Zpět</a></p>
       <form action="/api/auth/logout" method="post"><button className="link">Odhlásit</button></form>

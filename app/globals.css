@@ -139,3 +139,6 @@ h1 { font-weight: 760; }
 .statement-ready span { display: block; }
 .statement-title { font-family: var(--brand); font-weight: 760; font-size: 1.15rem; margin-bottom: 2px; }
 .statement-verdict { margin-top: 8px; font-weight: 600; line-height: 1.4; }
+.notify-mode { margin-top: 14px; }
+.notify-mode .radio { align-items: flex-start; }
+.notify-mode .radio input { margin-top: 3px; }
