@@ -36,7 +36,8 @@ export default async function Home({ searchParams }) {
           </div>
         </section>
         <section className="intro">
-          <p>Jezdíš jako obvykle. Kilometry ze Stravy se sečtou a jednou za měsíc dostaneš výpis s QR kódem na dar. Vybereš si, komu: Nadaci rodiny Vlčkových, Člověku v tísni, nebo Paměti národa.</p>
+          <p>Jezdíme, protože nás to baví. Tak proč se o tu radost po jízdě nepodělit s někým, komu se zrovna nedaří? Každý tvůj kilometr ze Stravy je koruna. Jednou za měsíc přijde výpis s QR kódem a ty rozhodneš, komu dar pošleš.</p>
+          <p>A když zrovna nepošleš nic, je to taky v pořádku. Třeba pošleš někdy jindy.</p>
           {sp?.chyba && <p className="error">{ERRORS[sp.chyba] || 'Něco se pokazilo.'}</p>}
           <a className="btn strava" href="/api/auth/login">Připojit přes Stravu</a>
         </section>
