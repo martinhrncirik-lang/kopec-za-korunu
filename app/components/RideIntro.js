@@ -3,13 +3,15 @@
 import { useEffect, useRef, useState } from 'react';
 import { introTexts } from '@/lib/praise-fun';
 
-// Úvodní animace po kliknutí na notifikaci o jízdě (?intro=1).
-// Každý druh pochvaly má vlastní scénu (kopec / hora se serpentinami, svítání, sníh,
-// pavučina po pauze, kilometrovník, pohár) a k věcné pochvale ironickou poznámku
-// a větu o vděku. Pak zlatá mince s částkou. Klepnutím lze kdykoli přeskočit.
-// Při „omezit pohyb" v telefonu se nezobrazí vůbec.
+// Úvodní animace po otevření jízdy (?intro=1 poprvé, ?intro=2 vždy).
+// 1) Krajina vyplní spodní dvě třetiny obrazovky, jezdec vyjede k cíli (praporek / pohár /
+//    kilometrovník), který stojí vpravo od středu a končí ve dvou třetinách výšky.
+// 2) Nahoře vlevo se napočítají kilometry. 3) Zespodu připluje průsvitný panel s pochvalou,
+//    ironickým komentářem, mincí, částkou a větou o vděku – cíl zůstane vidět nad ním.
+// Geometrie se počítá z velikosti obrazovky, takže sedí na telefonu i na monitoru.
+// Klepnutím lze kdykoli přeskočit. Při „omezit pohyb" se nezobrazí vůbec.
 
-const TOTAL_MS = 7400; // po této době se sama odsune
+const TOTAL_MS = 7800; // po této době se sama odsune
 const EXIT_MS = 550;
 
 function useCountUp(target, start, duration, run) {
@@ -29,38 +31,74 @@ function useCountUp(target, start, duration, run) {
   return v;
 }
 
-// Deterministické „náhodné" číslo (stejné na serveru i v prohlížeči).
+// Deterministické „náhodné" číslo 0–1.
 const rnd = (i, n) => ((Math.sin((i + 1) * n) * 10000) % 1 + 1) % 1;
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const lerp = (a, b, t) => a + (b - a) * t;
+const r1 = (v) => Math.round(v * 10) / 10;
 
 const COINS = Array.from({ length: 22 }, (_, i) => {
   const angle = rnd(i, 12.9898) * Math.PI * 2;
-  const dist = 90 + rnd(i, 78.233) * 150;
+  const dist = 80 + rnd(i, 78.233) * 130;
   return {
-    x: Math.cos(angle) * dist, y: Math.sin(angle) * dist - 40,
-    size: 10 + rnd(i, 39.425) * 16, delay: rnd(i, 4.1) * 160, spin: (rnd(i, 9.7) - 0.5) * 720,
+    x: Math.cos(angle) * dist, y: Math.sin(angle) * dist - 30,
+    size: 9 + rnd(i, 39.425) * 14, delay: rnd(i, 4.1) * 160, spin: (rnd(i, 9.7) - 0.5) * 720,
   };
 });
-const FLAKES = Array.from({ length: 40 }, (_, i) => ({
+const FLAKES = Array.from({ length: 44 }, (_, i) => ({
   left: rnd(i, 3.3) * 100, size: 3 + rnd(i, 7.7) * 5, dur: 4 + rnd(i, 5.1) * 5, delay: -rnd(i, 2.9) * 8, drift: (rnd(i, 6.1) - 0.5) * 60,
 }));
 
-// Krajina sahá daleko do stran a škáluje se podle výšky (meet), takže se na širokém
-// displeji nic neuřízne: místo zvětšení se jen ukáže víc kopců vedle. Silnice začíná
-// pod spodním okrajem, takže vždy přijíždí „odněkud".
-const TERRAIN = {
-  distance: {
-    back: 'M-1400 260 L-1400 120 L-1200 120 L-1040 95 L-900 130 L-780 100 L-660 120 L-560 85 L-450 125 L-350 95 L-260 130 L-170 90 L-80 120 L0 150 L90 110 L160 135 L250 70 L330 105 L400 85 L480 115 L560 80 L650 120 L740 95 L840 125 L950 90 L1060 120 L1200 100 L1340 125 L1500 95 L1800 95 L1800 260 Z',
-    front: 'M-1400 260 L-1400 170 L-1200 170 L-1020 180 L-880 165 L-760 182 L-640 168 L-520 185 L-420 165 L-320 180 L-230 160 L-140 185 L-60 170 L0 185 L70 160 L140 172 L230 118 L300 140 L400 120 L470 150 L540 135 L620 165 L700 150 L800 172 L900 155 L1000 175 L1120 160 L1260 178 L1450 162 L1800 162 L1800 260 Z',
-    road: 'M-20 236 C 60 205, 110 182, 150 168 S 215 128, 232 120',
-    finish: [232, 120],
-  },
-  climb: {
-    back: 'M-1400 260 L-1400 152 L-1200 152 L-980 165 L-820 148 L-680 166 L-560 150 L-440 168 L-330 145 L-240 165 L-150 140 L-70 160 L0 172 L60 150 L120 165 L310 140 L360 152 L400 146 L470 165 L550 140 L640 160 L740 135 L860 165 L980 148 L1120 166 L1300 150 L1500 162 L1800 162 L1800 260 Z',
-    front: 'M-1400 260 L-1400 200 L-1200 200 L-1000 205 L-760 198 L-560 206 L-420 196 L-300 205 L-180 190 L-80 200 L0 205 L110 178 L200 36 L290 165 L400 195 L480 190 L580 200 L700 192 L860 204 L1050 196 L1300 203 L1500 198 L1800 198 L1800 260 Z',
-    road: 'M10 236 C 70 214, 140 197, 150 182 C 160 170, 120 168, 150 150 C 175 136, 215 140, 205 122 C 195 106, 165 108, 180 92 C 192 80, 215 78, 205 64 C 198 54, 196 46, 200 38',
-    finish: [200, 38],
-  },
-};
+const poly = (pts) => pts.map(([x, y]) => `L${r1(x)} ${r1(y)}`).join(' ');
+// Hladká křivka přes body (Catmull-Rom → Bézier).
+function smooth(pts) {
+  let d = `M${r1(pts[0][0])} ${r1(pts[0][1])}`;
+  for (let i = 0; i < pts.length - 1; i++) {
+    const p0 = pts[i - 1] || pts[i], p1 = pts[i], p2 = pts[i + 1], p3 = pts[i + 2] || p2;
+    const c1 = [p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6];
+    const c2 = [p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6];
+    d += ` C${r1(c1[0])} ${r1(c1[1])}, ${r1(c2[0])} ${r1(c2[1])}, ${r1(p2[0])} ${r1(p2[1])}`;
+  }
+  return d;
+}
+
+// Celá scéna v pixelech obrazovky (viewBox = 0 0 W H).
+function buildScene(W, H, terrain, finish) {
+  const k = clamp(H / 300, 1.5, 3.2);                 // měřítko symbolu v cíli
+  const markerH = finish === 'flag' ? 26 : 30;          // výška symbolu v jednotkách
+  const fx = W / 2 + clamp(0.16 * W, 50, 260);          // vpravo od středu
+  const fy = H / 3 + markerH * k;                       // vršek symbolu = dvě třetiny odspodu
+  const N = Math.max(6, Math.round(W / 90));
+  const [lo, hi] = terrain === 'climb' ? [0.55, 0.7] : [0.47, 0.62];
+  const backPts = Array.from({ length: N + 1 }, (_, i) => [-40 + (i * (W + 80)) / N, H * (lo + (hi - lo) * rnd(i, 3.7))]);
+  const back = `M-40 ${H + 40} ${poly(backPts)} L${W + 40} ${H + 40} Z`;
+
+  let front, road;
+  if (terrain === 'climb') {
+    const hw = Math.min(0.36 * W, 0.5 * H), base = 0.88 * H;
+    const width = (y) => Math.max(0, (hw * (y - fy)) / (base - fy));
+    const left = [0.25, 0.5, 0.75].map((t, i) => [lerp(fx - hw, fx, t) + (rnd(i, 5.3) - 0.5) * 0.05 * hw, lerp(base, fy, t) + (rnd(i, 8.1) - 0.5) * 0.03 * H]);
+    const right = [0.75, 0.5, 0.25].map((t, i) => [lerp(fx + hw * 0.9, fx, t) + (rnd(i, 2.2) - 0.5) * 0.05 * hw, lerp(base - 0.02 * H, fy, t) + (rnd(i, 6.6) - 0.5) * 0.03 * H]);
+    front = `M-40 ${H + 40} ${poly([[-40, 0.9 * H], [fx - hw * 1.3, 0.9 * H], [fx - hw, base], ...left, [fx, fy], ...right, [fx + hw * 0.9, base - 0.02 * H], [fx + hw * 1.3, 0.9 * H], [W + 40, 0.91 * H]])} L${W + 40} ${H + 40} Z`;
+    const n = 6;
+    const pts = Array.from({ length: n + 1 }, (_, j) => {
+      const y = lerp(H + 20, fy, j / n);
+      if (j === 0) return [fx - hw * 0.45, y];
+      if (j === n) return [fx, fy];
+      return [fx + (j % 2 ? 1 : -1) * width(y) * 0.55, y];
+    });
+    road = smooth(pts);
+  } else {
+    const footY = 0.84 * H;
+    const ridge = (x) => fy + (footY - fy) * Math.pow(1 - clamp((x + 40) / (fx + 40), 0, 1), 1.3);
+    const left = [0.2, 0.4, 0.6, 0.8].map((t, j) => { const x = lerp(-40, fx, t); return [x, ridge(x) + (j % 2 ? -1 : 1) * 0.015 * H * (1 - t)]; });
+    front = `M-40 ${H + 40} ${poly([[-40, footY], ...left, [fx, fy], [fx + 0.07 * W, fy + 0.05 * H], [fx + 0.16 * W, fy + 0.11 * H], [fx + 0.26 * W, fy + 0.09 * H], [W + 40, fy + 0.2 * H]])} L${W + 40} ${H + 40} Z`;
+    const pts = [0, 0.3, 0.55, 0.8, 1].map((t) => { const x = lerp(0.04 * W, fx, t); return [x, Math.min(H + 20, ridge(x) + 0.22 * H * Math.pow(1 - t, 1.2))]; });
+    road = smooth(pts);
+  }
+  const sun = { x: Math.min(fx + 0.22 * W, W - 50), y: 0.5 * H, r: clamp(0.07 * Math.min(W, H), 26, 60) };
+  return { W, H, k, fx, fy, back, front, road, sun };
+}
 
 function Finish({ type, label }) {
   if (type === 'cup') {
@@ -107,10 +145,10 @@ function markSeen(id) {
 // always = přehrát i podruhé (odkaz „Přehrát animaci", ukázka); jinak jen při prvním otevření aktivity.
 export default function RideIntro({ km, elevation, praise, strong, amount, forWhom, isRun, seed, variant, always = false }) {
   const [phase, setPhase] = useState('check'); // check | play | exit | done
+  const [geo, setGeo] = useState(null);
   const timer = useRef();
   const t = introTexts({ praise, isRun, seed, variant });
   const { terrain, finish, mood } = t.scene;
-  const land = TERRAIN[terrain];
 
   useEffect(() => {
     // Adresu bez ?intro=…, ať se animace neopakuje po obnovení stránky nebo návratu zpět.
@@ -125,10 +163,11 @@ export default function RideIntro({ km, elevation, praise, strong, amount, forWh
       setPhase('done');
       return;
     }
+    setGeo(buildScene(window.innerWidth, window.innerHeight, terrain, finish));
     setPhase('play'); // animace se vykreslí až teď, takže začne od začátku
     document.body.style.overflow = 'hidden';
     timer.current = setTimeout(() => setPhase('exit'), TOTAL_MS);
-    const buzz = setTimeout(() => navigator.vibrate?.([30, 60, 30]), 3700); // Android; iPhone ignoruje
+    const buzz = setTimeout(() => navigator.vibrate?.([30, 60, 30]), 4300); // Android; iPhone ignoruje
     return () => { clearTimeout(timer.current); clearTimeout(buzz); document.body.style.overflow = ''; };
   }, []);
 
@@ -140,20 +179,19 @@ export default function RideIntro({ km, elevation, praise, strong, amount, forWh
     }
   }, [phase]);
 
-  const kmShown = useCountUp(km, 700, 1500, phase === 'play');
-  const elevShown = useCountUp(elevation, 900, 1400, phase === 'play');
+  const kmShown = useCountUp(km, 600, 1700, phase === 'play');
+  const elevShown = useCountUp(elevation, 800, 1600, phase === 'play');
 
-  if (phase === 'done' || phase === 'check') return null;
+  if (phase === 'done' || phase === 'check' || !geo) return null;
 
   const skip = () => { clearTimeout(timer.current); setPhase('exit'); };
   const fmt1 = (n) => n.toLocaleString('cs-CZ', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
   const stoneLabel = t.kind === 'milestone' ? (t.milestone || '1000').replace(/\s/g, '') : isRun ? '21,1' : '100';
   const cls = ['ride-intro', `kind-${t.kind}`, `terrain-${terrain}`, mood && `mood-${mood}`, strong && 'strong', phase === 'exit' && 'exit'];
+  const { W, H, k, fx, fy } = geo;
 
   return (
     <div className={cls.filter(Boolean).join(' ')} onClick={skip} role="dialog" aria-label={t.headline}>
-      <div className="ri-glow" />
-
       {mood === 'snow' && (
         <div className="ri-snow" aria-hidden="true">
           {FLAKES.map((f, i) => (
@@ -162,19 +200,21 @@ export default function RideIntro({ km, elevation, praise, strong, amount, forWh
         </div>
       )}
 
-      <svg className="ri-hill" viewBox="40 0 320 220" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
-        {mood === 'dawn' && <circle className="ri-sun" cx="305" cy="66" r="26" />}
-        <path className="ri-hill-back" d={land.back} />
-        <path className="ri-hill-front" d={land.front} />
-        <path id="ri-road" className="ri-road" d={land.road} pathLength="100" />
+      <svg className="ri-scene" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" aria-hidden="true" style={{ '--rise': `${Math.round(H * 0.12)}px`, '--sunrise': `${Math.round(H * 0.18)}px` }}>
+        {mood === 'dawn' && <circle className="ri-sun" cx={geo.sun.x} cy={geo.sun.y} r={geo.sun.r} />}
+        <path className="ri-hill-back" d={geo.back} />
+        <path className="ri-hill-front" d={geo.front} />
+        <path id="ri-road" className="ri-road" d={geo.road} pathLength="100" style={{ strokeWidth: (terrain === 'climb' ? 2.4 : 3.2) * k * 0.65 }} />
         <g className="ri-rider">
-          <circle r="7" fill="#f6d571" />
-          <circle r="3" fill="#05480d" />
-          <animateMotion dur="1.9s" begin="0.55s" fill="freeze" calcMode="spline" keyPoints="0;1" keyTimes="0;1" keySplines="0.45 0 0.25 1">
+          <g transform={`scale(${r1(k * 0.75)})`}>
+            <circle r="7" fill="#f6d571" />
+            <circle r="3" fill="#05480d" />
+          </g>
+          <animateMotion dur="1.9s" begin="0.5s" fill="freeze" calcMode="spline" keyPoints="0;1" keyTimes="0;1" keySplines="0.45 0 0.25 1">
             <mpath href="#ri-road" />
           </animateMotion>
         </g>
-        <g transform={`translate(${land.finish[0]} ${land.finish[1]})`}>
+        <g transform={`translate(${r1(fx)} ${r1(fy)}) scale(${r1(k)})`}>
           <Finish type={finish} label={stoneLabel} />
         </g>
       </svg>
@@ -200,7 +240,8 @@ export default function RideIntro({ km, elevation, praise, strong, amount, forWh
         </>
       )}
 
-      <div className="ri-content">
+      {/* Nahoře vlevo: nadpis a kilometry – napočítávají se během jízdy */}
+      <div className="ri-top">
         <p className="ri-headline">{t.headline}</p>
         <p className="ri-km"><span>{fmt1(kmShown)}</span> km</p>
         {elevation >= 50 && <p className="ri-elev">↑ {Math.round(elevShown).toLocaleString('cs-CZ')} m stoupání</p>}
@@ -209,10 +250,14 @@ export default function RideIntro({ km, elevation, praise, strong, amount, forWh
             {Array.from({ length: t.streak }, (_, i) => <span key={i} style={{ animationDelay: `${0.9 + i * (1.1 / t.streak)}s` }} />)}
           </p>
         )}
+      </div>
+
+      {/* Zespodu připluje panel se zbytkem; cíl nad ním zůstane vidět */}
+      <div className="ri-panel" style={{ maxHeight: Math.max(240, H - fy - 14) }}>
         {praise && <p className="ri-praise">{strong ? '⭐ ' : ''}{praise}</p>}
         <p className="ri-quip">{t.quip}</p>
-
         <div className="ri-coin-wrap">
+          <div className="ri-glow" />
           <div className="ri-burst" aria-hidden="true">
             {COINS.map((c, i) => (
               <span key={i} style={{ '--x': `${c.x}px`, '--y': `${c.y}px`, '--s': `${c.size}px`, '--d': `${c.delay}ms`, '--r': `${c.spin}deg` }} />
