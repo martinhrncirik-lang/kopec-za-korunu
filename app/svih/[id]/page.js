@@ -8,8 +8,7 @@ import { validToken, getActivity } from '@/lib/strava';
 import DonationCard from '@/app/components/DonationCard';
 import ShareButton from '@/app/components/ShareButton';
 import RouteMap from '@/app/components/RouteMap';
-import { pickRecipientId, getRecipient } from '@/lib/recipients';
-import RideIntro from '@/app/components/RideIntro';
+import { pickRecipientId } from '@/lib/recipients';
 
 export const dynamic = 'force-dynamic';
 
@@ -76,21 +75,8 @@ export default async function Svih({ params, searchParams }) {
   const isDouble = sp?.x === '2';
   const amount = Math.round(km * RATE_CZK_PER_KM) * (isDouble ? 2 : 1);
 
-  const recipientId = pickRecipientId(sp?.pro, athlete);
-
   return (
     <>
-      {sp?.intro === '1' && (
-        <RideIntro
-          km={Math.round(km * 10) / 10}
-          elevation={Math.round(elevation)}
-          praise={a.praise}
-          strong={a.praise_strong !== false && !!a.praise}
-          amount={amount}
-          forWhom={getRecipient(recipientId).forWhom}
-          isRun={isRun}
-        />
-      )}
       <p className="muted small activity-meta">{SPORT[a.sport_type] || a.sport_type} · {date}, {time}</p>
       <h1 className="activity-title">{s?.name || 'Aktivita'}</h1>
 
@@ -108,7 +94,7 @@ export default async function Svih({ params, searchParams }) {
         message={donationMessage(a.start_local.slice(0, 10), athlete?.payer_name)}
         basePath={`/svih/${id}`}
         isDouble={isDouble}
-        recipientId={recipientId}
+        recipientId={pickRecipientId(sp?.pro, athlete)}
         defaultId={pickRecipientId(null, athlete)}
       />
 
