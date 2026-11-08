@@ -93,7 +93,7 @@ export default async function Home({ searchParams }) {
           <ul className="months">
             {recent.map((r) => (
               <li key={r.strava_id}>
-                <a href={`/svih/${r.strava_id}`}>
+                <a href={`/svih/${r.strava_id}?intro=1`}>
                   {new Date(r.start_local + 'Z').toLocaleDateString('cs-CZ', { day: 'numeric', month: 'numeric', timeZone: 'UTC' })}
                   {' · '}{fmtKm(r.distance_m / 1000)} km{r.praise ? (r.praise_strong === false ? ' · 👍' : ' · ⭐ švih') : ''}
                 </a>

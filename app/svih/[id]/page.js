@@ -127,7 +127,7 @@ export default async function Svih({ params, searchParams }) {
       </section>
 
       <ShareButton text={`${a.praise ? a.praise + ' ' : `${fmtKm(km)} km na kole. `}Každý kilometr = koruna na dobrou věc.`} />
-      <p><a className="link" href="/">← Zpět</a></p>
+      <p><a className="link" href="/">← Zpět</a> · <a className="link" href={`/svih/${id}?intro=1`}>▶ Přehrát animaci</a></p>
     </>
   );
 }
