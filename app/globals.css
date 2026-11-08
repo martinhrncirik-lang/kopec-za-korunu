@@ -143,7 +143,7 @@ h1 { font-weight: 760; }
 .notify-mode .radio { align-items: flex-start; }
 .notify-mode .radio input { margin-top: 3px; }
 
-/* Úvodní animace po notifikaci o jízdě (RideIntro) */
+/* Úvodní animace – monitor (RideIntroWide), třídy ri-* */
 .ride-intro {
   position: fixed; inset: 0; z-index: 9999; overflow: hidden; cursor: pointer;
   background: radial-gradient(120% 80% at 50% 10%, #0d6b1a 0%, #05480d 45%, #022906 100%);
@@ -197,7 +197,7 @@ h1 { font-weight: 760; }
 
 /* Nahoře vlevo: nadpis a kilometry */
 .ri-top {
-  position: absolute; z-index: 2; top: max(5vh, 22px); left: max(22px, calc(50vw - 280px)); right: 22px; text-align: left;
+  position: absolute; z-index: 2; top: max(5vh, 22px); left: 16px; right: 16px; text-align: left;
   text-shadow: 0 2px 14px rgba(0, 0, 0, .35);
 }
 .ri-top p { margin: 0; }
@@ -210,19 +210,19 @@ h1 { font-weight: 760; }
 .ri-days span { width: 14px; height: 14px; border-radius: 50%; border: 2px solid rgba(246, 213, 113, .6); animation: ri-day .35s ease-out both; }
 @keyframes ri-day { from { transform: scale(.4); background: transparent; } to { transform: scale(1); background: #f6d571; border-color: #f6d571; } }
 
-/* Panel, který připluje zespodu přes krajinu */
+/* Panel, který připluje zespodu přes krajinu – plovoucí karta vlevo od cíle */
 .ri-panel {
-  position: absolute; z-index: 2; bottom: 0; left: 50%; width: min(100%, 520px); box-sizing: border-box;
-  display: flex; flex-direction: column; justify-content: center; overflow: hidden; text-align: center;
-  padding: 16px 20px calc(36px + env(safe-area-inset-bottom));
-  border-radius: 24px 24px 0 0; border-top: 1px solid rgba(246, 213, 113, .35);
+  position: absolute; z-index: 2; bottom: calc(10px + env(safe-area-inset-bottom)); box-sizing: border-box;
+  display: flex; flex-direction: column; justify-content: space-evenly; overflow: hidden; text-align: center;
+  padding: 14px 16px 32px;
+  border-radius: 22px; border: 1px solid rgba(246, 213, 113, .35);
   background: rgba(2, 24, 8, .72); -webkit-backdrop-filter: blur(10px) saturate(1.2); backdrop-filter: blur(10px) saturate(1.2);
   box-shadow: 0 -12px 40px rgba(0, 0, 0, .35);
-  transform: translateX(-50%); animation: ri-panel .7s 2.65s cubic-bezier(.2, .9, .25, 1) both;
+  animation: ri-panel .8s 2.65s cubic-bezier(.2, .9, .25, 1) both;
 }
 .mood-dawn .ri-panel { background: rgba(22, 14, 40, .68); }
 .mood-snow .ri-panel { background: rgba(4, 30, 26, .7); }
-@keyframes ri-panel { from { transform: translate(-50%, 105%); } to { transform: translate(-50%, 0); } }
+@keyframes ri-panel { from { transform: translateY(110vh); } to { transform: translateY(0); } }
 .ri-panel p { margin: 0; }
 .ri-praise {
   font-family: system-ui, sans-serif; font-size: .98rem; font-weight: 600; line-height: 1.35;
@@ -272,8 +272,22 @@ h1 { font-weight: 760; }
 @keyframes ri-pop { from { opacity: 0; transform: scale(.6); } }
 .ri-sub { position: relative; font-family: system-ui, sans-serif; font-weight: 600; opacity: .95; margin: 4px auto 0 !important; max-width: 340px; line-height: 1.35; animation: ri-up .5s 4.85s ease-out both; }
 .ri-skip {
-  position: absolute; z-index: 3; bottom: max(10px, env(safe-area-inset-bottom)); left: 0; right: 0; margin: 0; text-align: center;
+  position: absolute; z-index: 3; bottom: calc(18px + env(safe-area-inset-bottom)); margin: 0; text-align: center;
   font: 500 .78rem system-ui, sans-serif; color: rgba(255, 255, 255, .65); animation: ri-up .4s 1.4s both;
+}
+/* Telefon: panel jako karta od spodního okraje, pod cílem */
+.narrow .ri-panel {
+  bottom: 0; justify-content: center; border-radius: 24px 24px 0 0; border-width: 1px 0 0;
+  padding: 16px 20px calc(36px + env(safe-area-inset-bottom));
+}
+.narrow .ri-skip { bottom: max(10px, env(safe-area-inset-bottom)); }
+.narrow .ri-top { left: 22px; }
+/* Monitor: vysoký panel – větší obsah */
+@media (min-height: 780px) {
+  .wide .ri-praise, .wide .ri-quip { font-size: 1.06rem; }
+  .wide .ri-sub { font-size: 1.04rem; }
+  .wide .ri-coin-wrap, .wide .ri-coin { width: 100px; height: 100px; }
+  .wide .ri-amount { font-size: 2.15rem; }
 }
 @media (max-height: 720px) {
   .ri-km span { font-size: 3.3rem; }
@@ -285,6 +299,132 @@ h1 { font-weight: 760; }
   .ri-coin-wrap, .ri-coin { width: 54px; height: 54px; }
   .ri-coin-wrap { margin: 8px auto 2px; }
   .ri-amount { font-size: 1.45rem; }
-  .ri-panel { padding-top: 12px; padding-bottom: calc(28px + env(safe-area-inset-bottom)); }
+  .wide .ri-panel { padding-top: 12px; padding-bottom: 28px; }
+  .narrow .ri-panel { padding-top: 12px; padding-bottom: calc(28px + env(safe-area-inset-bottom)); }
 }
 @media (prefers-reduced-motion: reduce) { .ride-intro { display: none; } }
+
+/* Úvodní animace – telefon (RideIntroPhone), třídy rm-* */
+.rim {
+  position: fixed; inset: 0; z-index: 9999; overflow: hidden; cursor: pointer;
+  background: radial-gradient(120% 80% at 50% 10%, #0d6b1a 0%, #05480d 45%, #022906 100%);
+  color: #fff; display: flex; flex-direction: column; align-items: center;
+  font-family: var(--brand); -webkit-tap-highlight-color: transparent;
+  animation: rm-in .35s ease-out both;
+}
+.rim.exit { animation: rm-out .55s cubic-bezier(.6, 0, .8, .2) forwards; }
+@keyframes rm-in { from { opacity: 0; } }
+@keyframes rm-out { to { opacity: 0; transform: scale(1.06); filter: blur(4px); } }
+.rm-glow {
+  position: absolute; left: 50%; top: 52%; width: 520px; height: 520px; margin: -260px 0 0 -260px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(246, 213, 113, .45) 0%, rgba(246, 213, 113, 0) 65%);
+  opacity: 0; animation: rm-glow 1.4s 3.45s ease-out forwards;
+}
+.rim:not(.strong) .rm-glow { animation-name: rm-glow-soft; }
+@keyframes rm-glow { 0% { opacity: 0; transform: scale(.4); } 40% { opacity: 1; } 100% { opacity: .55; transform: scale(1.1); } }
+@keyframes rm-glow-soft { 0% { opacity: 0; transform: scale(.4); } 100% { opacity: .35; transform: scale(1); } }
+
+/* Krajina */
+.rm-hill { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: 34vh; overflow: visible; }
+.rm-hill-back { fill: #0a5c16; animation: rm-rise .8s .05s cubic-bezier(.2, .8, .2, 1) both; }
+.rm-hill-front { fill: #033a09; animation: rm-rise .8s .2s cubic-bezier(.2, .8, .2, 1) both; }
+@keyframes rm-rise { from { transform: translateY(80px); opacity: 0; } }
+.rm-road {
+  fill: none; stroke: #f6ead0; stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round; opacity: .9;
+  stroke-dasharray: 100; stroke-dashoffset: 100; animation: rm-draw 1.9s .55s cubic-bezier(.45, 0, .25, 1) forwards;
+}
+.rim.terrain-climb .rm-road { stroke-width: 2.6; }
+@keyframes rm-draw { to { stroke-dashoffset: 0; } }
+.rm-rider { opacity: 0; animation: rm-show .2s .55s forwards; filter: drop-shadow(0 0 6px rgba(246, 213, 113, .9)); }
+@keyframes rm-show { to { opacity: 1; } }
+.rm-pop { opacity: 0; transform-box: fill-box; transform-origin: center bottom; animation: rm-pop-in .5s 2.35s cubic-bezier(.3, 1.6, .5, 1) forwards; }
+@keyframes rm-pop-in { from { opacity: 0; transform: scale(0); } to { opacity: 1; transform: scale(1); } }
+.rim.kind-alltime .rm-pop { filter: drop-shadow(0 0 8px rgba(246, 213, 113, .9)); }
+
+/* Nálady: svítání, sníh, prach po pauze */
+.rim.mood-dawn { background: linear-gradient(180deg, #0c1838 0%, #2c2a5c 30%, #8a4a5a 55%, #e0864a 78%, #f3b25a 100%); }
+.rim.mood-dawn .rm-hill-back { fill: #1f4a2a; }
+.rim.mood-dawn .rm-hill-front { fill: #0b2a14; }
+.rm-sun { fill: #ffd27a; filter: drop-shadow(0 0 18px rgba(255, 190, 90, .9)); animation: rm-sunrise 3.2s .1s cubic-bezier(.2, .7, .3, 1) both; }
+@keyframes rm-sunrise { from { transform: translateY(110px); } }
+.rim.mood-snow { background: radial-gradient(120% 80% at 50% 10%, #4b8a7d 0%, #1a5248 45%, #08281f 100%); }
+.rim.mood-snow .rm-hill-back { fill: #dbe9e4; }
+.rim.mood-snow .rm-hill-front { fill: #0c3d27; }
+.rm-snow { position: absolute; inset: 0; pointer-events: none; }
+.rm-snow span { position: absolute; top: -10px; border-radius: 50%; background: #fff; opacity: .85; animation: rm-fall linear infinite; }
+@keyframes rm-fall { to { transform: translate(var(--drift), 105vh); } }
+.rm-gray {
+  position: absolute; inset: 0; pointer-events: none; z-index: 2;
+  -webkit-backdrop-filter: grayscale(1) sepia(.35) brightness(.8); backdrop-filter: grayscale(1) sepia(.35) brightness(.8);
+  animation: rm-fade 1.4s .5s ease-in forwards;
+}
+@keyframes rm-fade { to { opacity: 0; } }
+.rm-web { position: absolute; top: 0; width: 46vw; max-width: 220px; z-index: 3; pointer-events: none; animation: rm-web-off 1.1s 1s cubic-bezier(.5, 0, .9, .4) forwards; }
+.rm-web.left { left: 0; }
+.rm-web.right { right: 0; transform: scaleX(-1); animation-name: rm-web-off-r; width: 34vw; }
+@keyframes rm-web-off { to { opacity: 0; transform: translate(-30px, 60px) rotate(-12deg); } }
+@keyframes rm-web-off-r { to { opacity: 0; transform: scaleX(-1) translate(-30px, 60px) rotate(-12deg); } }
+
+/* Texty */
+.rm-content { position: relative; z-index: 1; width: 100%; max-width: 440px; padding: max(5vh, 24px) 22px 0; text-align: center; }
+.rm-content p { margin: 0; }
+.rm-headline { font-weight: 800; font-stretch: 82%; font-size: 1.6rem; color: #f6d571; letter-spacing: -.01em; animation: rm-up .5s .15s ease-out both; }
+.rim.strong .rm-headline { font-size: 2rem; text-shadow: 0 0 24px rgba(246, 213, 113, .5); }
+.rm-km { font-weight: 800; font-stretch: 78%; font-size: 1.5rem; line-height: 1; margin-top: 4px !important; animation: rm-up .5s .45s ease-out both; }
+.rm-km span { font-size: 4.2rem; font-variant-numeric: tabular-nums; letter-spacing: -.03em; }
+.rm-elev { font-family: system-ui, sans-serif; font-weight: 600; opacity: .85; margin-top: 2px !important; animation: rm-up .5s .8s ease-out both; }
+.rm-days { display: flex; justify-content: center; gap: 6px; margin-top: 10px !important; }
+.rm-days span { width: 14px; height: 14px; border-radius: 50%; border: 2px solid rgba(246, 213, 113, .6); animation: rm-day .35s ease-out both; }
+@keyframes rm-day { from { transform: scale(.4); background: transparent; } to { transform: scale(1); background: #f6d571; border-color: #f6d571; } }
+.rm-praise {
+  font-family: system-ui, sans-serif; font-size: .98rem; font-weight: 600; line-height: 1.35;
+  margin: 14px auto 0 !important; padding: 9px 13px; max-width: 360px; border-radius: 12px;
+  background: rgba(255, 255, 255, .1); border: 1px solid rgba(246, 213, 113, .45);
+  animation: rm-up .55s 2.0s cubic-bezier(.2, 1.2, .4, 1) both;
+}
+.rm-quip {
+  font-family: system-ui, sans-serif; font-style: italic; font-size: .98rem; line-height: 1.35;
+  margin: 10px auto 0 !important; max-width: 340px; color: rgba(255, 255, 255, .92);
+  animation: rm-up .55s 2.75s ease-out both;
+}
+@keyframes rm-up { from { opacity: 0; transform: translateY(18px); } }
+
+/* Mince a dar */
+.rm-coin-wrap { position: relative; width: 84px; height: 84px; margin: 18px auto 6px; perspective: 400px; }
+.rm-coin {
+  width: 84px; height: 84px; display: block; filter: drop-shadow(0 6px 18px rgba(0, 0, 0, .35));
+  animation: rm-coin 1s 3.45s cubic-bezier(.2, .9, .3, 1.2) both;
+}
+@keyframes rm-coin {
+  0% { opacity: 0; transform: translateY(-60px) rotateY(0) scale(.3); }
+  60% { opacity: 1; transform: translateY(0) rotateY(540deg) scale(1.15); }
+  100% { transform: rotateY(720deg) scale(1); }
+}
+.rm-burst { position: absolute; left: 50%; top: 50%; }
+.rm-burst span {
+  position: absolute; width: var(--s); height: var(--s); margin: calc(var(--s) / -2) 0 0 calc(var(--s) / -2); border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #f6d571, #e3b341 55%, #a97b12); box-shadow: inset 0 0 0 1.5px #c38f1d;
+  opacity: 0; animation: rm-burst 1.3s calc(3.85s + var(--d)) cubic-bezier(.15, .7, .35, 1) forwards;
+}
+.rim:not(.strong) .rm-burst span:nth-child(2n) { display: none; }
+@keyframes rm-burst {
+  0% { opacity: 1; transform: translate(0, 0) scale(.3) rotate(0); }
+  70% { opacity: 1; }
+  100% { opacity: 0; transform: translate(var(--x), calc(var(--y) + 120px)) scale(1) rotate(var(--r)); }
+}
+.rm-amount { font-weight: 800; font-stretch: 82%; font-size: 1.8rem; color: #f6d571; animation: rm-pop .5s 3.9s cubic-bezier(.3, 1.6, .5, 1) both; }
+@keyframes rm-pop { from { opacity: 0; transform: scale(.6); } }
+.rm-sub { font-family: system-ui, sans-serif; font-weight: 600; opacity: .95; margin: 4px auto 0 !important; max-width: 330px; line-height: 1.35; animation: rm-up .5s 4.35s ease-out both; }
+.rm-skip {
+  position: absolute; z-index: 1; bottom: max(14px, env(safe-area-inset-bottom)); left: 0; right: 0; margin: 0; text-align: center;
+  font: 500 .8rem system-ui, sans-serif; color: rgba(255, 255, 255, .7); animation: rm-up .4s 1.4s both;
+}
+@media (max-height: 700px) {
+  .rm-km span { font-size: 3.4rem; }
+  .rim.strong .rm-headline { font-size: 1.7rem; }
+  .rm-praise, .rm-quip { font-size: .9rem; }
+  .rm-coin-wrap { width: 64px; height: 64px; margin-top: 12px; }
+  .rm-coin { width: 64px; height: 64px; }
+  .rm-hill { height: 26vh; }
+}
+@media (prefers-reduced-motion: reduce) { .rim { display: none; } }
