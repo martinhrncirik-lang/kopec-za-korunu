@@ -8,7 +8,8 @@ import { validToken, getActivity } from '@/lib/strava';
 import DonationCard from '@/app/components/DonationCard';
 import ShareButton from '@/app/components/ShareButton';
 import RouteMap from '@/app/components/RouteMap';
-import { pickRecipientId } from '@/lib/recipients';
+import { pickRecipientId, getRecipient } from '@/lib/recipients';
+import RideIntro from '@/app/components/RideIntro';
 
 export const dynamic = 'force-dynamic';
 
@@ -75,8 +76,23 @@ export default async function Svih({ params, searchParams }) {
   const isDouble = sp?.x === '2';
   const amount = Math.round(km * RATE_CZK_PER_KM) * (isDouble ? 2 : 1);
 
+  const recipientId = pickRecipientId(sp?.pro, athlete);
+
   return (
     <>
+      {['1', '2'].includes(sp?.intro) && (
+        <RideIntro
+          km={Math.round(km * 10) / 10}
+          elevation={Math.round(elevation)}
+          praise={a.praise}
+          strong={a.praise_strong !== false && !!a.praise}
+          amount={amount}
+          forWhom={getRecipient(recipientId).forWhom}
+          isRun={isRun}
+          seed={id}
+          always={sp.intro === '2'}
+        />
+      )}
       <p className="muted small activity-meta">{SPORT[a.sport_type] || a.sport_type} · {date}, {time}</p>
       <h1 className="activity-title">{s?.name || 'Aktivita'}</h1>
 
@@ -94,7 +110,7 @@ export default async function Svih({ params, searchParams }) {
         message={donationMessage(a.start_local.slice(0, 10), athlete?.payer_name)}
         basePath={`/svih/${id}`}
         isDouble={isDouble}
-        recipientId={pickRecipientId(sp?.pro, athlete)}
+        recipientId={recipientId}
         defaultId={pickRecipientId(null, athlete)}
       />
 
@@ -112,7 +128,7 @@ export default async function Svih({ params, searchParams }) {
       </section>
 
       <ShareButton text={`${a.praise ? a.praise + ' ' : `${fmtKm(km)} km na kole. `}Každý kilometr = koruna na dobrou věc.`} />
-      <p><a className="link" href="/">← Zpět</a></p>
+      <p><a className="link" href="/">← Zpět</a> · <a className="link" href={`/svih/${id}?intro=2`}>▶ Přehrát animaci</a></p>
     </>
   );
 }

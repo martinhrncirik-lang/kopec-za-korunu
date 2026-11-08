@@ -104,14 +104,14 @@ async function handle(ev) {
   if (p?.strong && mode !== 'monthly') {
     sent = await notifyAthlete(athlete.id, {
       title: 'Tohle byl švih! 🚴',
-      body: `${praise} Pošlete za něj dar?`,
-      url: `${APP_URL}/svih/${row.strava_id}`,
+      body: `${praise} Pošleš za něj dar?`,
+      url: `${APP_URL}/svih/${row.strava_id}?intro=1`,
     });
   } else if (mode === 'all') {
     sent = await notifyAthlete(athlete.id, {
       title: `+${fmtKm(km)} km pro ${getRecipient(athlete.default_recipient).forWhom}`,
-      body: `${p ? p.text + ' ' : ''}Tento měsíc máte ${fmtKm(monthKm)} km, tedy ${monthCzk} Kč.`,
-      url: `${APP_URL}/svih/${row.strava_id}`,
+      body: `${p ? p.text + ' ' : ''}Tento měsíc máš ${fmtKm(monthKm)} km, tedy ${monthCzk} Kč.`,
+      url: `${APP_URL}/svih/${row.strava_id}?intro=1`,
     });
   }
   return `uloženo, ${p ? `pochvala (${p.kind}${p.strong ? '' : ', slabší'}), ` : ''}režim ${mode}, notifikací odesláno: ${sent}`;

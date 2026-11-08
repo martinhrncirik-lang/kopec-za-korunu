@@ -2,7 +2,7 @@
 import { useState } from 'react';
 
 const OPTIONS = [
-  ['svih', 'Jen při švihu a měsíční výpis', 'Rekordy, stovky, série a milníky. Obyčejná jízda se tiše zapíše.'],
+  ['svih', 'Jen při švihu a měsíční výpis', 'Rekordy, Gran Fondo, série a milníky. Obyčejná jízda se tiše zapíše.'],
   ['all', 'Po každé jízdě', 'Krátká zpráva s kilometry po každé aktivitě.'],
   ['monthly', 'Jen měsíční výpis', 'Jednou měsíčně, nic víc.'],
 ];

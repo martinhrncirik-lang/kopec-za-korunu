@@ -48,10 +48,10 @@ export default function PushButton({ compact = false }) {
   const msg = {
     loading: null,
     unsupported: 'Tento prohlížeč notifikace neumí.',
-    'ios-install': 'Na iPhonu: Sdílet → Přidat na plochu, pak aplikaci otevřete z plochy a notifikace půjdou zapnout.',
+    'ios-install': 'Na iPhonu: Sdílet → Přidat na plochu, pak aplikaci otevři z plochy a notifikace půjdou zapnout.',
     denied: 'Notifikace jsou zablokované v nastavení prohlížeče.',
     on: 'Notifikace jsou zapnuté na tomto zařízení.',
-    error: 'Zapnutí se nepovedlo, zkuste to znovu.',
+    error: 'Zapnutí se nepovedlo, zkus to znovu.',
   }[state];
 
   if (compact) {

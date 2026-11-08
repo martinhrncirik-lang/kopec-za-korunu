@@ -43,7 +43,7 @@ test('nejdelší jízda všech dob má přednost před stovkou', () => {
 
 test('každá stovka, s pořadím v roce', () => {
   const p = judge(ride(104), { prev12w: hist, hundredsBefore: 2 });
-  assert.equal(p.kind, 'hundred'); assert.match(p.text, /Stovka! 104 km.*Už 3\. letos/);
+  assert.equal(p.kind, 'hundred'); assert.match(p.text, /Gran Fondo! 104 km.*Už 3\. letos/);
 });
 
 test('tisíc výškových metrů', () => {
@@ -123,11 +123,11 @@ test('měsíční věta: pořadí', () => {
 });
 test('měsíční věta: nad průměrem', () => {
   const o = [M('2026-03', 100), M('2026-04', 900), M('2026-05', 800), M('2026-06', 700), M('2026-07', 650), M('2026-08', 50), M('2026-09', 500)];
-  assert.match(monthVerdict(M('2026-10', 600), o, '2026-01'), /^O 14 % víc, než je váš měsíční průměr od ledna \(529 km\)\.$/);
+  assert.match(monthVerdict(M('2026-10', 600), o, '2026-01'), /^O 14 % víc, než je tvůj měsíční průměr od ledna \(529 km\)\.$/);
 });
 test('měsíční věta: víc než minulý měsíc, zima', () => {
   const o = [M('2026-01', 300), M('2026-02', 400), M('2026-07', 900), M('2026-08', 900), M('2026-09', 800), M('2026-10', 100)];
-  assert.equal(monthVerdict(M('2026-11', 350), o, '2026-01'), 'O 250 km víc než v říjnu. Zima vás nezastavila.');
+  assert.equal(monthVerdict(M('2026-11', 350), o, '2026-01'), 'O 250 km víc než v říjnu. Zima tě nezastavila.');
 });
 test('měsíční věta: nejlepší zimní měsíc', () => {
   const o = [M('2026-01', 300), M('2026-02', 400), M('2026-07', 900), M('2026-08', 900), M('2026-09', 800), M('2026-10', 500)];
@@ -145,4 +145,43 @@ test('měsíční věta: poctivý pokles a bez historie', () => {
 });
 test('měsíční věta: rok jiný než začátek historie', () => {
   assert.match(monthVerdict(M('2027-01', 900), [M('2026-11', 300), M('2026-12', 200)], '2026-11'), /od listopadu 2026/);
+});
+
+import { kindFromText, introTexts, SCENES, ALL_QUIPS } from '../lib/praise-fun.js';
+
+test('druh pochvaly z textu sedí s judge() pro všechny druhy', () => {
+  const run = (km, start = '2026-10-20T08:00:00') => ({ sport_type: 'Run', distance_m: km * 1000, elevation_m: 0, start_local: start });
+  const days = ['2026-10-18', '2026-10-19'];
+  const cases = [
+    judge(ride(150), { allTimeBiggestRideM: 140000 }),
+    judge(ride(150), { allTimeBiggestRideM: 150000 }),
+    judge(ride(104), { hundredsBefore: 2 }),
+    judge(run(21.5), {}),
+    judge(ride(70, 1200), { prev12w: hist }),
+    judge(ride(72), { prev12w: hist }),
+    judge(run(15), { prev12w: [run(5), run(6), run(7), run(8), run(9)] }),
+    judge(ride(50, 900), { prev12w: hist }),
+    judge(ride(20), { prevDays: days }),
+    judge(ride(30), { ytdBeforeM: 2985000 }),
+    judge(ride(20, 0, '2026-11-20T08:00:00', { avg_temp: -2 }), {}),
+    judge(ride(20, 0, '2026-10-20T05:42:00'), {}),
+    judge(ride(20), { lastBefore: '2026-10-01' }),
+  ];
+  for (const p of cases) assert.equal(kindFromText(p.text), p.kind, p.text);
+  assert.equal(kindFromText(null), 'none');
+  // staré texty uložené v databázi (vykání, „Stovka!")
+  assert.equal(kindFromText('Stovka! 104 km v jednom zátahu.'), 'hundred');
+  assert.equal(kindFromText('Nejdelší jízda, jakou máte na Stravě: 150 km. Osobní rekord.'), 'alltime');
+  assert.equal(kindFromText('Zpátky v sedle po 19 dnech. Vítejte zpět.'), 'comeback');
+});
+
+test('texty animace existují pro každý druh, kolo i běh', () => {
+  for (const kind of Object.keys(SCENES)) assert.ok(ALL_QUIPS[kind]?.length, kind);
+  for (const isRun of [false, true]) {
+    const t = introTexts({ praise: '5 dní v řadě na kole. Série trvá od 1. 11.', isRun, seed: '123' });
+    assert.equal(t.kind, 'streak'); assert.equal(t.streak, 5); assert.ok(t.quip && t.gratitude && t.headline);
+  }
+  assert.equal(introTexts({ praise: 'Letos už 3 000 km. To je 3 000 Kč na dobrou věc.', seed: 1 }).milestone, '3 000');
+  // stejná aktivita = stejný vtip
+  assert.equal(introTexts({ praise: null, seed: 'a' }).quip, introTexts({ praise: null, seed: 'a' }).quip);
 });

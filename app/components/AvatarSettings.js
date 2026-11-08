@@ -56,7 +56,7 @@ export default function AvatarSettings({ initialSource, stravaUrl, customUrl }) 
       <div className="avatar-options">
         <label className="radio">
           <input type="radio" name="avatar" checked={source === 'strava'} onChange={() => choose('strava')} disabled={!stravaUrl} />
-          Profilový obrázek ze Stravy{!stravaUrl && <span className="muted small"> (na Stravě žádný nemáte)</span>}
+          Profilový obrázek ze Stravy{!stravaUrl && <span className="muted small"> (na Stravě žádný nemáš)</span>}
         </label>
         <label className="radio">
           <input type="radio" name="avatar" checked={source === 'custom'} onChange={() => choose('custom')} />

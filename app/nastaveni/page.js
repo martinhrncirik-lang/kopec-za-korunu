@@ -31,12 +31,12 @@ export default async function Settings() {
       </section>
       <section className="card">
         <h2>Komu daruji</h2>
-        <p className="muted small">Primární příjemce je předvybraný u měsíčního výpisu i u každé jízdy. U konkrétního daru ho můžete vždy změnit.</p>
+        <p className="muted small">Primární příjemce je předvybraný u měsíčního výpisu i u každé jízdy. U konkrétního daru ho můžeš vždy změnit.</p>
         <RecipientSettings choices={RECIPIENT_CHOICES} initial={getRecipient(athlete.default_recipient).id} />
       </section>
       <section className="card">
         <h2>Jméno ve zprávě pro příjemce</h2>
-        <p className="muted small">Objeví se v platbě, aby organizace věděla, od koho dar je (třeba kvůli potvrzení o daru). Necháte-li prázdné, dar bude anonymní.</p>
+        <p className="muted small">Objeví se v platbě, aby organizace věděla, od koho dar je (třeba kvůli potvrzení o daru). Když ho necháš prázdné, dar bude anonymní.</p>
         <PayerNameSetting initial={athlete.payer_name || ''} />
       </section>
       <section className="card">
