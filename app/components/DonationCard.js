@@ -48,7 +48,7 @@ async function DonationQr({ r, amount, vs, message, isDouble, toggleHref }) {
         {vs && (<><dt>Variabilní symbol</dt><dd>{vs}</dd></>)}
         <dt>Zpráva</dt><dd>{message}</dd>
       </dl>
-      <p className="muted small">Naskenujte v bankovní aplikaci, platba se předvyplní.</p>
+      <p className="muted small">Naskenuj v bankovní aplikaci, platba se předvyplní.</p>
       {isDouble
         ? <a className="btn ghost" href={toggleHref}>Zpět na základní dar</a>
         : <a className="btn" href={toggleHref}>Daruju dvojnásobek</a>}

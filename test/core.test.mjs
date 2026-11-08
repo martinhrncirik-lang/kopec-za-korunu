@@ -43,7 +43,7 @@ test('nejdelší jízda všech dob má přednost před stovkou', () => {
 
 test('každá stovka, s pořadím v roce', () => {
   const p = judge(ride(104), { prev12w: hist, hundredsBefore: 2 });
-  assert.equal(p.kind, 'hundred'); assert.match(p.text, /Stovka! 104 km.*Už 3\. letos/);
+  assert.equal(p.kind, 'hundred'); assert.match(p.text, /Gran Fondo! 104 km.*Už 3\. letos/);
 });
 
 test('tisíc výškových metrů', () => {
@@ -123,11 +123,11 @@ test('měsíční věta: pořadí', () => {
 });
 test('měsíční věta: nad průměrem', () => {
   const o = [M('2026-03', 100), M('2026-04', 900), M('2026-05', 800), M('2026-06', 700), M('2026-07', 650), M('2026-08', 50), M('2026-09', 500)];
-  assert.match(monthVerdict(M('2026-10', 600), o, '2026-01'), /^O 14 % víc, než je váš měsíční průměr od ledna \(529 km\)\.$/);
+  assert.match(monthVerdict(M('2026-10', 600), o, '2026-01'), /^O 14 % víc, než je tvůj měsíční průměr od ledna \(529 km\)\.$/);
 });
 test('měsíční věta: víc než minulý měsíc, zima', () => {
   const o = [M('2026-01', 300), M('2026-02', 400), M('2026-07', 900), M('2026-08', 900), M('2026-09', 800), M('2026-10', 100)];
-  assert.equal(monthVerdict(M('2026-11', 350), o, '2026-01'), 'O 250 km víc než v říjnu. Zima vás nezastavila.');
+  assert.equal(monthVerdict(M('2026-11', 350), o, '2026-01'), 'O 250 km víc než v říjnu. Zima tě nezastavila.');
 });
 test('měsíční věta: nejlepší zimní měsíc', () => {
   const o = [M('2026-01', 300), M('2026-02', 400), M('2026-07', 900), M('2026-08', 900), M('2026-09', 800), M('2026-10', 500)];
@@ -169,6 +169,10 @@ test('druh pochvaly z textu sedí s judge() pro všechny druhy', () => {
   ];
   for (const p of cases) assert.equal(kindFromText(p.text), p.kind, p.text);
   assert.equal(kindFromText(null), 'none');
+  // staré texty uložené v databázi (vykání, „Stovka!")
+  assert.equal(kindFromText('Stovka! 104 km v jednom zátahu.'), 'hundred');
+  assert.equal(kindFromText('Nejdelší jízda, jakou máte na Stravě: 150 km. Osobní rekord.'), 'alltime');
+  assert.equal(kindFromText('Zpátky v sedle po 19 dnech. Vítejte zpět.'), 'comeback');
 });
 
 test('texty animace existují pro každý druh, kolo i běh', () => {

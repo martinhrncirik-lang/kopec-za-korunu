@@ -44,17 +44,20 @@ const FLAKES = Array.from({ length: 40 }, (_, i) => ({
   left: rnd(i, 3.3) * 100, size: 3 + rnd(i, 7.7) * 5, dur: 4 + rnd(i, 5.1) * 5, delay: -rnd(i, 2.9) * 8, drift: (rnd(i, 6.1) - 0.5) * 60,
 }));
 
+// Krajina sahá daleko do stran a škáluje se podle výšky (meet), takže se na širokém
+// displeji nic neuřízne: místo zvětšení se jen ukáže víc kopců vedle. Silnice začíná
+// pod spodním okrajem, takže vždy přijíždí „odněkud".
 const TERRAIN = {
   distance: {
-    back: 'M0 220 L0 150 L90 110 L160 135 L250 70 L330 105 L400 85 L400 220 Z',
-    front: 'M0 220 L0 185 L70 160 L140 172 L230 118 L300 140 L400 120 L400 220 Z',
-    road: 'M10 205 C 80 190, 110 180, 150 168 S 215 128, 232 120',
+    back: 'M-1400 260 L-1400 120 L-1200 120 L-1040 95 L-900 130 L-780 100 L-660 120 L-560 85 L-450 125 L-350 95 L-260 130 L-170 90 L-80 120 L0 150 L90 110 L160 135 L250 70 L330 105 L400 85 L480 115 L560 80 L650 120 L740 95 L840 125 L950 90 L1060 120 L1200 100 L1340 125 L1500 95 L1800 95 L1800 260 Z',
+    front: 'M-1400 260 L-1400 170 L-1200 170 L-1020 180 L-880 165 L-760 182 L-640 168 L-520 185 L-420 165 L-320 180 L-230 160 L-140 185 L-60 170 L0 185 L70 160 L140 172 L230 118 L300 140 L400 120 L470 150 L540 135 L620 165 L700 150 L800 172 L900 155 L1000 175 L1120 160 L1260 178 L1450 162 L1800 162 L1800 260 Z',
+    road: 'M-20 236 C 60 205, 110 182, 150 168 S 215 128, 232 120',
     finish: [232, 120],
   },
   climb: {
-    back: 'M0 220 L0 172 L60 150 L120 165 L310 140 L360 152 L400 146 L400 220 Z',
-    front: 'M0 220 L0 205 L110 178 L200 36 L290 165 L400 195 L400 220 Z',
-    road: 'M30 212 C 90 205, 140 195, 150 182 C 160 170, 120 168, 150 150 C 175 136, 215 140, 205 122 C 195 106, 165 108, 180 92 C 192 80, 215 78, 205 64 C 198 54, 196 46, 200 38',
+    back: 'M-1400 260 L-1400 152 L-1200 152 L-980 165 L-820 148 L-680 166 L-560 150 L-440 168 L-330 145 L-240 165 L-150 140 L-70 160 L0 172 L60 150 L120 165 L310 140 L360 152 L400 146 L470 165 L550 140 L640 160 L740 135 L860 165 L980 148 L1120 166 L1300 150 L1500 162 L1800 162 L1800 260 Z',
+    front: 'M-1400 260 L-1400 200 L-1200 200 L-1000 205 L-760 198 L-560 206 L-420 196 L-300 205 L-180 190 L-80 200 L0 205 L110 178 L200 36 L290 165 L400 195 L480 190 L580 200 L700 192 L860 204 L1050 196 L1300 203 L1500 198 L1800 198 L1800 260 Z',
+    road: 'M10 236 C 70 214, 140 197, 150 182 C 160 170, 120 168, 150 150 C 175 136, 215 140, 205 122 C 195 106, 165 108, 180 92 C 192 80, 215 78, 205 64 C 198 54, 196 46, 200 38',
     finish: [200, 38],
   },
 };
@@ -159,8 +162,8 @@ export default function RideIntro({ km, elevation, praise, strong, amount, forWh
         </div>
       )}
 
-      <svg className="ri-hill" viewBox="0 0 400 220" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
-        {mood === 'dawn' && <circle className="ri-sun" cx="330" cy="68" r="28" />}
+      <svg className="ri-hill" viewBox="40 0 320 220" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
+        {mood === 'dawn' && <circle className="ri-sun" cx="305" cy="66" r="26" />}
         <path className="ri-hill-back" d={land.back} />
         <path className="ri-hill-front" d={land.front} />
         <path id="ri-road" className="ri-road" d={land.road} pathLength="100" />

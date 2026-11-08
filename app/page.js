@@ -17,8 +17,8 @@ export const dynamic = 'force-dynamic';
 
 const ERRORS = {
   zamitnuto: 'Přihlášení přes Stravu bylo zrušeno.',
-  state: 'Přihlášení vypršelo, zkuste to znovu.',
-  opravneni: 'Bez přístupu k aktivitám to nepůjde. Při přihlášení nechte zaškrtnuté zobrazení aktivit.',
+  state: 'Přihlášení vypršelo, zkus to znovu.',
+  opravneni: 'Bez přístupu k aktivitám to nepůjde. Při přihlášení nech zaškrtnuté zobrazení aktivit.',
 };
 
 export default async function Home({ searchParams }) {
@@ -36,7 +36,7 @@ export default async function Home({ searchParams }) {
           </div>
         </section>
         <section className="intro">
-          <p>Jezdíte jako obvykle. Kilometry ze Stravy se sečtou a jednou za měsíc dostanete výpis s QR kódem na dar. Vyberete si, komu: Nadaci rodiny Vlčkových, Člověku v tísni, nebo Paměti národa.</p>
+          <p>Jezdíš jako obvykle. Kilometry ze Stravy se sečtou a jednou za měsíc dostaneš výpis s QR kódem na dar. Vybereš si, komu: Nadaci rodiny Vlčkových, Člověku v tísni, nebo Paměti národa.</p>
           {sp?.chyba && <p className="error">{ERRORS[sp.chyba] || 'Něco se pokazilo.'}</p>}
           <a className="btn strava" href="/api/auth/login">Připojit přes Stravu</a>
         </section>
@@ -115,7 +115,7 @@ export default async function Home({ searchParams }) {
       )}
 
       <section className="card">
-        <h2>Přizvěte kámoše</h2>
+        <h2>Přizvi kámoše</h2>
         <p className="muted small">Čím víc kol, tím víc korun.</p>
         <ShareButton label="Poslat pozvánku" text="Jezdím, dělám radost sobě a občas i ostatním. Přidej se!" />
       </section>

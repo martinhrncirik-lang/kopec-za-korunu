@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic';
 
 const SAMPLES = {
   alltime:   { label: 'Rekord všech dob', km: 152.3, elev: 1180, praise: 'Nejdelší jízda v historii: 152,3 km, o 12,1 km víc než dosavadní osobní maximum (140,2 km).' },
-  hundred:   { label: 'Stovka', km: 104.2, elev: 860, praise: 'Stovka! 104,2 km v jednom zátahu. Už 3. letos.' },
+  hundred:   { label: 'Gran Fondo', km: 104.2, elev: 860, praise: 'Gran Fondo! 104,2 km v jednom zátahu. Už 3. letos.' },
   hundredRun:{ label: 'Půlmaraton', km: 21.4, elev: 120, run: true, praise: 'Půlmaraton: 21,4 km.' },
   climb1000: { label: 'Přes 1 000 m', km: 68.5, elev: 1240, praise: 'Přes tisíc výškových metrů: 1 240 m na jedné jízdě.' },
   long12:    { label: 'Nejdelší za 12 týdnů', km: 72.4, elev: 540, praise: 'Nejdelší jízda za posledních 12 týdnů: 72,4 km, o 12,4 km víc než dosavadní maximum (60 km).' },
@@ -15,7 +15,7 @@ const SAMPLES = {
   milestone: { label: 'Tisícovka za rok', km: 42.0, elev: 390, praise: 'Letos už 3 000 km. To je 3 000 Kč na dobrou věc.' },
   winter:    { label: 'Mráz (slabší)', km: 27.8, elev: 210, weak: true, praise: 'Jízda při -2 °C. Tohle se počítá dvakrát, aspoň morálně.' },
   early:     { label: 'Ranní ptáče (slabší)', km: 35.2, elev: 300, weak: true, praise: 'Start v 5:40. Kilometry před snídaní.' },
-  comeback:  { label: 'Návrat po pauze (slabší)', km: 22.5, elev: 150, weak: true, praise: 'Zpátky v sedle po 19 dnech. Vítejte zpět.' },
+  comeback:  { label: 'Návrat po pauze (slabší)', km: 22.5, elev: 150, weak: true, praise: 'Zpátky v sedle po 19 dnech. Vítej zpět.' },
   none:      { label: 'Bez pochvaly', km: 24.3, elev: 180, weak: true, praise: null },
 };
 
