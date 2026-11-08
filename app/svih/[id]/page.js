@@ -89,6 +89,7 @@ export default async function Svih({ params, searchParams }) {
           amount={amount}
           forWhom={getRecipient(recipientId).forWhom}
           isRun={isRun}
+          seed={id}
         />
       )}
       <p className="muted small activity-meta">{SPORT[a.sport_type] || a.sport_type} · {date}, {time}</p>
