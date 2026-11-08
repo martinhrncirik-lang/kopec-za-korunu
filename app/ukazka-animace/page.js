@@ -38,7 +38,7 @@ export default async function Ukazka({ searchParams }) {
       <RideIntro
         key={`${typ}-${v}`}
         km={s.km} elevation={s.elev} praise={s.praise} strong={!s.weak && !!s.praise}
-        amount={Math.round(s.km)} forWhom="NRV" isRun={!!s.run} seed="ukazka" variant={v}
+        amount={Math.round(s.km)} forWhom="NRV" isRun={!!s.run} seed="ukazka" variant={v} always
       />
     </>
   );

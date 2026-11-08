@@ -80,7 +80,7 @@ export default async function Svih({ params, searchParams }) {
 
   return (
     <>
-      {sp?.intro === '1' && (
+      {['1', '2'].includes(sp?.intro) && (
         <RideIntro
           km={Math.round(km * 10) / 10}
           elevation={Math.round(elevation)}
@@ -90,6 +90,7 @@ export default async function Svih({ params, searchParams }) {
           forWhom={getRecipient(recipientId).forWhom}
           isRun={isRun}
           seed={id}
+          always={sp.intro === '2'}
         />
       )}
       <p className="muted small activity-meta">{SPORT[a.sport_type] || a.sport_type} · {date}, {time}</p>
@@ -127,7 +128,7 @@ export default async function Svih({ params, searchParams }) {
       </section>
 
       <ShareButton text={`${a.praise ? a.praise + ' ' : `${fmtKm(km)} km na kole. `}Každý kilometr = koruna na dobrou věc.`} />
-      <p><a className="link" href="/">← Zpět</a> · <a className="link" href={`/svih/${id}?intro=1`}>▶ Přehrát animaci</a></p>
+      <p><a className="link" href="/">← Zpět</a> · <a className="link" href={`/svih/${id}?intro=2`}>▶ Přehrát animaci</a></p>
     </>
   );
 }

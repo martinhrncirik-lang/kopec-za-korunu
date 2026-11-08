@@ -88,24 +88,41 @@ function Finish({ type, label }) {
   );
 }
 
-export default function RideIntro({ km, elevation, praise, strong, amount, forWhom, isRun, seed, variant }) {
-  const [phase, setPhase] = useState('play'); // play | exit | done
+// Pamatuje si (v tomto zařízení), které aktivity už animaci viděly.
+const SEEN_KEY = 'kzk-intro-seen';
+function alreadySeen(id) {
+  try { return JSON.parse(localStorage.getItem(SEEN_KEY) || '[]').includes(String(id)); } catch { return false; }
+}
+function markSeen(id) {
+  try {
+    const list = JSON.parse(localStorage.getItem(SEEN_KEY) || '[]').filter((x) => x !== String(id));
+    list.push(String(id));
+    localStorage.setItem(SEEN_KEY, JSON.stringify(list.slice(-300)));
+  } catch {}
+}
+
+// always = přehrát i podruhé (odkaz „Přehrát animaci", ukázka); jinak jen při prvním otevření aktivity.
+export default function RideIntro({ km, elevation, praise, strong, amount, forWhom, isRun, seed, variant, always = false }) {
+  const [phase, setPhase] = useState('check'); // check | play | exit | done
   const timer = useRef();
   const t = introTexts({ praise, isRun, seed, variant });
   const { terrain, finish, mood } = t.scene;
   const land = TERRAIN[terrain];
 
   useEffect(() => {
-    // Adresu bez ?intro=1, ať se animace neopakuje po obnovení stránky nebo návratu zpět.
+    // Adresu bez ?intro=…, ať se animace neopakuje po obnovení stránky nebo návratu zpět.
     const url = new URL(window.location.href);
     if (url.searchParams.has('intro')) {
       url.searchParams.delete('intro');
       window.history.replaceState(null, '', url.pathname + url.search + url.hash);
     }
-    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
+    const seen = alreadySeen(seed);
+    if (seed != null) markSeen(seed);
+    if ((seen && !always) || window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
       setPhase('done');
       return;
     }
+    setPhase('play'); // animace se vykreslí až teď, takže začne od začátku
     document.body.style.overflow = 'hidden';
     timer.current = setTimeout(() => setPhase('exit'), TOTAL_MS);
     const buzz = setTimeout(() => navigator.vibrate?.([30, 60, 30]), 3700); // Android; iPhone ignoruje
@@ -123,7 +140,7 @@ export default function RideIntro({ km, elevation, praise, strong, amount, forWh
   const kmShown = useCountUp(km, 700, 1500, phase === 'play');
   const elevShown = useCountUp(elevation, 900, 1400, phase === 'play');
 
-  if (phase === 'done') return null;
+  if (phase === 'done' || phase === 'check') return null;
 
   const skip = () => { clearTimeout(timer.current); setPhase('exit'); };
   const fmt1 = (n) => n.toLocaleString('cs-CZ', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
