@@ -428,3 +428,52 @@ h1 { font-weight: 760; }
   .rm-hill { height: 26vh; }
 }
 @media (prefers-reduced-motion: reduce) { .rim { display: none; } }
+
+/* ===== Pastelová paleta animace (8. 11.) – přebíjí barvy výše, pro telefon (rm-) i monitor (ri-) ===== */
+.ride-intro, .rim {
+  --ink: #1f3a2a; --ink-soft: rgba(31, 58, 42, .78); --gold-deep: #a87a10;
+  color: var(--ink);
+  background: radial-gradient(120% 80% at 50% 10%, #f5f9f1 0%, #e0eedc 50%, #c9dfca 100%);
+}
+.ri-hill-back, .rm-hill-back { fill: #b3d4b9; }
+.ri-hill-front, .rm-hill-front { fill: #86b592; }
+.ri-road, .rm-road { stroke: #ffffff; opacity: 1; filter: drop-shadow(0 1px 1px rgba(31, 58, 42, .18)); }
+.ri-pop line, .rm-pop line { stroke: #6f8576; }
+.ri-rider, .rm-rider { filter: drop-shadow(0 0 5px rgba(227, 179, 65, .8)); }
+
+/* texty */
+.ri-top { text-shadow: none; }
+.ri-headline, .rm-headline { color: var(--gold-deep); }
+.ride-intro.strong .ri-headline, .rim.strong .rm-headline { text-shadow: 0 0 18px rgba(246, 213, 113, .55); }
+.ri-km, .rm-km { color: var(--ink); }
+.ri-elev, .rm-elev { color: var(--ink-soft); opacity: 1; }
+.ri-days span, .rm-days span { border-color: rgba(168, 122, 16, .55); }
+.ri-praise, .rm-praise { background: rgba(255, 255, 255, .62); border-color: rgba(184, 138, 23, .45); color: var(--ink); }
+.ri-quip, .rm-quip { color: var(--ink-soft); }
+.ri-amount, .rm-amount { color: var(--gold-deep); }
+.ri-sub, .rm-sub { color: var(--ink); opacity: 1; }
+.ri-skip, .rm-skip { color: rgba(31, 58, 42, .55); }
+.ri-coin, .rm-coin { filter: drop-shadow(0 6px 14px rgba(120, 90, 20, .25)); }
+
+/* panel na monitoru */
+.ri-panel {
+  background: rgba(255, 255, 255, .58); border-color: rgba(184, 138, 23, .3);
+  box-shadow: 0 -8px 30px rgba(60, 90, 70, .18);
+}
+
+/* svítání */
+.ride-intro.mood-dawn, .rim.mood-dawn { background: linear-gradient(180deg, #e3e6f6 0%, #ecdcee 32%, #f9dccd 58%, #fde8c6 82%); }
+.mood-dawn .ri-hill-back, .rim.mood-dawn .rm-hill-back { fill: #bfd3bd; }
+.mood-dawn .ri-hill-front, .rim.mood-dawn .rm-hill-front { fill: #95b69c; }
+.ri-sun, .rm-sun { fill: #ffd98a; filter: drop-shadow(0 0 16px rgba(255, 200, 120, .8)); }
+.mood-dawn .ri-panel { background: rgba(255, 255, 255, .55); }
+
+/* sníh */
+.ride-intro.mood-snow, .rim.mood-snow { background: radial-gradient(120% 80% at 50% 10%, #f1f8f8 0%, #dbecea 50%, #c6dedb 100%); }
+.mood-snow .ri-hill-back, .rim.mood-snow .rm-hill-back { fill: #ffffff; }
+.mood-snow .ri-hill-front, .rim.mood-snow .rm-hill-front { fill: #9fc4b7; }
+.ri-snow span, .rm-snow span { background: #ffffff; box-shadow: 0 0 2px rgba(80, 120, 140, .55); }
+.mood-snow .ri-panel { background: rgba(255, 255, 255, .55); }
+
+/* návrat po pauze: pavučiny tmavší, aby byly na světlém pozadí vidět */
+.ri-web g, .rm-web g { stroke: rgba(60, 72, 66, .45); }
