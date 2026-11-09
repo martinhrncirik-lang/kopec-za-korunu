@@ -480,3 +480,13 @@ h1 { font-weight: 760; }
 
 .recipient-about { margin: 10px 2px 0; line-height: 1.45; }
 .recipient-about a { white-space: nowrap; }
+
+/* Sbalitelné položky nastavení */
+.setting { padding: 0; }
+.setting summary { list-style: none; cursor: pointer; display: flex; align-items: baseline; gap: 10px; padding: 14px 16px; }
+.setting summary::-webkit-details-marker { display: none; }
+.setting summary::after { content: '›'; margin-left: 8px; color: var(--muted); font-size: 1.3rem; line-height: 1; transition: transform .15s; }
+.setting[open] summary::after { transform: rotate(90deg); }
+.setting-title { font-family: var(--brand); font-stretch: 88%; font-weight: 600; font-size: 1.05rem; }
+.setting-value { margin-left: auto; text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 50%; }
+.setting-body { padding: 0 16px 16px; }
