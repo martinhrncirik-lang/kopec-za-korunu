@@ -477,3 +477,6 @@ h1 { font-weight: 760; }
 
 /* návrat po pauze: pavučiny tmavší, aby byly na světlém pozadí vidět */
 .ri-web g, .rm-web g { stroke: rgba(60, 72, 66, .45); }
+
+.recipient-about { margin: 10px 2px 0; line-height: 1.45; }
+.recipient-about a { white-space: nowrap; }

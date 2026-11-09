@@ -31,6 +31,13 @@ export default async function DonationCard({ amount, vs, message, basePath, isDo
         <DonationQr r={r} amount={amount} vs={r.useVs ? vs : null} message={message} isDouble={isDouble}
           toggleHref={href(r.id, !isDouble)} />
       )}
+
+      {r.about && (
+        <p className="recipient-about small">
+          <span className="muted">{r.about}</span>{' '}
+          {r.url && <a href={r.url} target="_blank" rel="noopener noreferrer">Web organizace ↗</a>}
+        </p>
+      )}
     </>
   );
 }
