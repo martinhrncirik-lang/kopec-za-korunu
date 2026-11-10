@@ -9,7 +9,12 @@ export default function About() {
     <>
       <h1>O aplikaci</h1>
       <section className="card about">
-        {PHOTO && <img src={PHOTO} alt="Martin" className="about-photo" />}
+        {PHOTO && (
+          <figure className="about-photo">
+            <img src={PHOTO} alt="Martin s helmou v davu cyklistů na Critical Mass" />
+            <figcaption className="muted small">Na Critical Mass, společné jízdě ulicemi města</figcaption>
+          </figure>
+        )}
         <p>
           Ahoj, jsem Martin. Jezdím na kole a Kopec za korunu jsem postavil proto, aby z mých kilometrů
           bylo i něco dobrého pro ostatní. A když už to funguje mně, může to fungovat i tobě.

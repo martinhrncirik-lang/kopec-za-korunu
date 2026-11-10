@@ -494,6 +494,8 @@ h1 { font-weight: 760; }
 /* O aplikaci + patička */
 .about p { margin: 0 0 12px; line-height: 1.55; }
 .about p:last-child { margin-bottom: 0; }
-.about-photo { float: right; width: 112px; height: 112px; object-fit: cover; border-radius: 18px; margin: 2px 0 10px 14px; }
+.about-photo { margin: -4px -4px 14px; }
+.about-photo img { display: block; width: 100%; height: auto; border-radius: 10px; }
+.about-photo figcaption { margin-top: 6px; }
 .foot { text-align: center; padding: 8px 16px 28px; font-size: .88rem; }
 .foot a { color: var(--muted); }
