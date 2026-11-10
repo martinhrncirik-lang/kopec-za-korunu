@@ -24,6 +24,7 @@ export async function GET(req) {
       {
         strava_id: t.athlete.id,
         firstname: t.athlete.firstname,
+        lastname: t.athlete.lastname || '',
         access_token: t.access_token,
         refresh_token: t.refresh_token,
         expires_at: t.expires_at,

@@ -70,3 +70,6 @@ alter table athletes add column if not exists notify_mode text not null default 
 
 -- 10. 11. 2026: uvítání s filozofií Kopce (kdy sportovec klepl na „Platí“)
 alter table athletes add column if not exists welcomed_at timestamptz;
+
+-- 10. 11. 2026: příjmení (jen pro přehled autora)
+alter table athletes add column if not exists lastname text;
