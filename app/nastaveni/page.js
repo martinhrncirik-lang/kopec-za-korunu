@@ -3,6 +3,7 @@ import { getAthlete } from '@/lib/db';
 import { currentAthleteId } from '@/lib/session';
 import { ensureStravaAvatar } from '@/lib/avatar';
 import SettingsView from '@/app/components/SettingsView';
+import { isAdmin } from '@/lib/admin';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,6 +17,7 @@ export default async function Settings() {
   return (
     <>
       <SettingsView athlete={athlete} />
+      {isAdmin(athlete) && <p><a className="link" href="/prehled">Přehled (vidíš jen ty)</a></p>}
       <form action="/api/auth/logout" method="post"><button className="link">Odhlásit</button></form>
     </>
   );

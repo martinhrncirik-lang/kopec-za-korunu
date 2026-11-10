@@ -512,3 +512,11 @@ h1 { font-weight: 760; }
 
 /* „další" pod seznamy na hlavní stránce */
 .more-toggle { display: block; margin: 6px 0 0; padding: 8px 0 0; border-top: 1px solid var(--line); width: 100%; text-align: left; color: var(--muted); font-size: .92rem; }
+
+/* Přehled pro autora */
+.ov-tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+.ov-tiles .card { margin: 0; display: flex; flex-direction: column; gap: 2px; }
+.ov-big { font-family: var(--brand); font-stretch: 88%; font-size: 1.6rem; font-weight: 700; }
+.ov-row { padding: 10px 0; border-top: 1px solid var(--line); }
+.ov-row:first-of-type { border-top: 0; }
+.ov-meta { margin-top: 2px; line-height: 1.5; }
