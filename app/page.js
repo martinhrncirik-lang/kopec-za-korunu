@@ -63,7 +63,7 @@ export default async function Home({ searchParams }) {
   const recent = await recentActivities(athlete.id, 5);
   const czk = Math.round(km * RATE_CZK_PER_KM);
   const months = (await monthsWithData(athlete.id)).filter((m) => m !== month).slice(0, 6);
-  // Prvních 10 dní v měsíci: karta s výpisem za minulý měsíc (pojistka, kdyby notifikace nedorazila).
+  // Prvních 5 dní v měsíci: karta s výpisem za minulý měsíc (pojistka, kdyby notifikace nedorazila).
   const dayOfMonth = Number(new Intl.DateTimeFormat('cs-CZ', { timeZone: 'Europe/Prague', day: 'numeric' }).format(new Date()));
   const lastMonth = previousMonth(month);
   const last = dayOfMonth <= 5 ? await monthSummary(athlete.id, lastMonth) : null;
