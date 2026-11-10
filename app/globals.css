@@ -499,3 +499,13 @@ h1 { font-weight: 760; }
 .about-photo figcaption { margin-top: 6px; }
 .foot { text-align: center; padding: 8px 16px 28px; font-size: .88rem; }
 .foot a { color: var(--muted); }
+
+/* Uvítací obrazovka */
+.welcome { max-width: 420px; margin: 28px auto 0; text-align: center; }
+.welcome-coin { width: 88px; height: 88px; margin: 0 auto 18px; display: block; }
+.welcome h1 { margin: 0 0 14px; }
+.welcome p { line-height: 1.55; margin: 0 0 14px; }
+.welcome-lead { font-size: 1.12rem; }
+.welcome .btn.block { width: 100%; margin: 22px 0 14px; }
+.welcome-leave { margin: 0; }
+.welcome-leave .link { font-size: inherit; padding: 0; }

@@ -67,3 +67,6 @@ alter table athletes add column if not exists payer_name text;
 
 -- v0.6: režim notifikací ('svih' = jen švih, 'all' = po každé jízdě, 'monthly' = jen měsíční výpis)
 alter table athletes add column if not exists notify_mode text not null default 'svih';
+
+-- 10. 11. 2026: uvítání s filozofií Kopce (kdy sportovec klepl na „Platí“)
+alter table athletes add column if not exists welcomed_at timestamptz;

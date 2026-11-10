@@ -9,6 +9,7 @@ import { syncRecent, recentActivities } from '@/lib/sync';
 import { backfill } from '@/lib/strava';
 import { after } from 'next/server';
 import { vocative } from '@/lib/vocative';
+import Welcome from './components/Welcome';
 import { avatarUrl, ensureStravaAvatar } from '@/lib/avatar';
 import { getRecipient } from '@/lib/recipients';
 import { monthVerdictFor } from '@/lib/monthly';
@@ -27,6 +28,11 @@ export default async function Home({ searchParams }) {
   let athlete = athleteId ? await getAthlete(athleteId) : null;
   if (athlete) athlete = await ensureStravaAvatar(athlete);
 
+  // První přihlášení: nejdřív uvítání s filozofií Kopce.
+  if (athlete && !athlete.welcomed_at) {
+    return <Welcome name={athlete.firstname ? vocative(athlete.firstname) : ''} />;
+  }
+
   if (!athlete) {
     return (
       <>
@@ -39,6 +45,7 @@ export default async function Home({ searchParams }) {
           <p>Jezdíme, protože nás to baví. Tak proč se o tu radost po jízdě nepodělit s někým, komu se zrovna nedaří? Každý tvůj kilometr ze Stravy je koruna. Jednou za měsíc přijde výpis s QR kódem a ty rozhodneš, komu dar pošleš.</p>
           <p>A když zrovna nepošleš nic, je to taky v pořádku. Třeba pošleš někdy jindy.</p>
           {sp?.chyba && <p className="error">{ERRORS[sp.chyba] || 'Něco se pokazilo.'}</p>}
+          {sp?.odpojeno && <p className="muted">Odpojeno, tvoje data jsou smazaná. Dveře zůstávají otevřené.</p>}
           <a className="btn strava" href="/api/auth/login">Připojit přes Stravu</a>
         </section>
       </>
