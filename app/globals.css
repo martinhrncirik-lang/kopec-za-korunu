@@ -490,3 +490,10 @@ h1 { font-weight: 760; }
 .setting-title { font-family: var(--brand); font-stretch: 88%; font-weight: 600; font-size: 1.05rem; }
 .setting-value { margin-left: auto; text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 50%; }
 .setting-body { padding: 0 16px 16px; }
+
+/* O aplikaci + patička */
+.about p { margin: 0 0 12px; line-height: 1.55; }
+.about p:last-child { margin-bottom: 0; }
+.about-photo { float: right; width: 112px; height: 112px; object-fit: cover; border-radius: 50%; margin: 0 0 10px 14px; }
+.foot { text-align: center; padding: 8px 16px 28px; font-size: .88rem; }
+.foot a { color: var(--muted); }

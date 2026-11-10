@@ -22,6 +22,7 @@ export default function RootLayout({ children }) {
           </a>
         </header>
         <main>{children}</main>
+        <footer className="foot"><a href="/o-aplikaci">O aplikaci</a></footer>
       </body>
     </html>
   );
