@@ -10,6 +10,7 @@ import { backfill } from '@/lib/strava';
 import { after } from 'next/server';
 import { vocative } from '@/lib/vocative';
 import Welcome from './components/Welcome';
+import MoreList from './components/MoreList';
 import { avatarUrl, ensureStravaAvatar } from '@/lib/avatar';
 import { getRecipient } from '@/lib/recipients';
 import { monthVerdictFor } from '@/lib/monthly';
@@ -98,7 +99,7 @@ export default async function Home({ searchParams }) {
       {recent.length > 0 && (
         <section className="card">
           <h2>Poslední aktivity</h2>
-          <ul className="months">
+          <MoreList>
             {recent.map((r) => (
               <li key={r.strava_id}>
                 <a href={`/svih/${r.strava_id}?intro=1`}>
@@ -107,7 +108,7 @@ export default async function Home({ searchParams }) {
                 </a>
               </li>
             ))}
-          </ul>
+          </MoreList>
         </section>
       )}
 
@@ -116,9 +117,9 @@ export default async function Home({ searchParams }) {
       {months.length > 0 && (
         <section className="card">
           <h2>Výpisy</h2>
-          <ul className="months">
+          <MoreList>
             {months.map((m) => <li key={m}><a href={`/vypis/${m}`}>{monthLabel(m)}</a></li>)}
-          </ul>
+          </MoreList>
         </section>
       )}
 

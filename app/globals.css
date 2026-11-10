@@ -509,3 +509,6 @@ h1 { font-weight: 760; }
 .welcome .btn.block { width: 100%; margin: 22px 0 14px; }
 .welcome-leave { margin: 0; }
 .welcome-leave .link { font-size: inherit; padding: 0; }
+
+/* „další" pod seznamy na hlavní stránce */
+.more-toggle { display: block; margin: 6px 0 0; padding: 8px 0 0; border-top: 1px solid var(--line); width: 100%; text-align: left; color: var(--muted); font-size: .92rem; }
