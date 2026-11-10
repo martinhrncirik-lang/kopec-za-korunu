@@ -124,7 +124,7 @@ export default async function Home({ searchParams }) {
 
       <section className="card">
         <h2>Přizvi kámoše</h2>
-        <p className="muted small">Nejde o počet. Pozvi toho, kdo to má stejně jako ty: jezdí rád a občas pomůže.</p>
+        <p className="muted small">Nejde o počet. Pozvi toho, kdo to má stejně jako ty, jezdí rád a občas pomůže.</p>
         <ShareButton label="Poslat pozvánku" text="Jezdím, dělám radost sobě a občas i ostatním. Přidej se!" />
       </section>
     </>
