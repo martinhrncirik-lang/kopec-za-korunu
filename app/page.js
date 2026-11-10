@@ -66,7 +66,7 @@ export default async function Home({ searchParams }) {
   // Prvních 10 dní v měsíci: karta s výpisem za minulý měsíc (pojistka, kdyby notifikace nedorazila).
   const dayOfMonth = Number(new Intl.DateTimeFormat('cs-CZ', { timeZone: 'Europe/Prague', day: 'numeric' }).format(new Date()));
   const lastMonth = previousMonth(month);
-  const last = dayOfMonth <= 10 ? await monthSummary(athlete.id, lastMonth) : null;
+  const last = dayOfMonth <= 5 ? await monthSummary(athlete.id, lastMonth) : null;
   let verdict = null;
   if (last?.count) { try { verdict = await monthVerdictFor(athlete.id, lastMonth); } catch (e) { console.error('verdict', e); } }
 
