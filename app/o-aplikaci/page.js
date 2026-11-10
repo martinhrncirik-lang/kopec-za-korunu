@@ -1,7 +1,7 @@
 // Stránka o aplikaci a jejím autorovi. Veřejná, bez přihlášení.
 export const metadata = { title: 'O aplikaci – Kopec za korunu' };
 
-const PHOTO = null; // až dorazí fotka: '/o-aplikaci/martin.jpg' (soubor do public/o-aplikaci/)
+const PHOTO = '/o-aplikaci/martin.jpg';
 const EMAIL = 'martin.hrncirik@gmail.com';
 
 export default function About() {
