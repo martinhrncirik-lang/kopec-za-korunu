@@ -6,6 +6,7 @@ import { fmtKm } from '@/lib/stats';
 import PushButton from './components/PushButton';
 import ShareButton from './components/ShareButton';
 import { syncRecent, recentActivities } from '@/lib/sync';
+import { ensureLastname } from '@/lib/strava';
 import { backfill } from '@/lib/strava';
 import { after } from 'next/server';
 import { vocative } from '@/lib/vocative';
@@ -28,6 +29,7 @@ export default async function Home({ searchParams }) {
   const athleteId = await currentAthleteId();
   let athlete = athleteId ? await getAthlete(athleteId) : null;
   if (athlete) athlete = await ensureStravaAvatar(athlete);
+  if (athlete) athlete = await ensureLastname(athlete);
 
   // První přihlášení: nejdřív uvítání s filozofií Kopce.
   if (athlete && !athlete.welcomed_at) {
