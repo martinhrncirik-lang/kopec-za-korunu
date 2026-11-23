@@ -82,7 +82,7 @@ async function handle(ev) {
 
   const { data: existing } = await db().from('activities').select('praise').eq('strava_id', row.strava_id).maybeSingle();
   // Teplota: ze zařízení, jinak z počasí (jen u nové aktivity – kvůli zimní pochvale)
-  if (ev.aspect_type === 'create' && !existing) await withWeather(row, activity);
+  const tempInfo = ev.aspect_type === 'create' && !existing ? await withWeather(row, activity) : '';
   const { error } = await db().from('activities').upsert(row, { onConflict: 'strava_id' });
   if (error) throw error;
 
@@ -118,5 +118,5 @@ async function handle(ev) {
       url: `${APP_URL}/svih/${row.strava_id}?intro=1`,
     });
   }
-  return `uloženo, ${p ? `pochvala (${p.kind}${p.strong ? '' : ', slabší'}), ` : ''}režim ${mode}, notifikací odesláno: ${sent}`;
+  return `uloženo, ${tempInfo}, ${p ? `pochvala (${p.kind}${p.strong ? '' : ', slabší'}), ` : 'bez pochvaly, '}režim ${mode}, notifikací odesláno: ${sent}`;
 }
