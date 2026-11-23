@@ -12,5 +12,10 @@ export default async function Overview() {
   const id = await currentAthleteId();
   const athlete = id ? await getAthlete(id) : null;
   if (!isAdmin(athlete)) notFound();
-  return <OverviewView data={await overviewData()} />;
+  return (
+    <>
+      <OverviewView data={await overviewData()} />
+      <p><a className="btn ghost" href="/prehled/diag">Diagnostika poslední jízdy</a></p>
+    </>
+  );
 }
