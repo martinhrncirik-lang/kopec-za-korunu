@@ -4,6 +4,7 @@ import { db, getAthleteByStravaId, monthSummary } from '@/lib/db';
 import { validToken, getActivity, getAthleteStats, toRow } from '@/lib/strava';
 import { evaluateActivity, fmtKm } from '@/lib/stats';
 import { notifyAthlete } from '@/lib/push';
+import { headline } from '@/lib/praise-fun';
 import { getRecipient } from '@/lib/recipients';
 
 // GET: Strava ověřuje webhook při registraci (jednorázově).
@@ -103,7 +104,7 @@ async function handle(ev) {
   sent = 0;
   if (p?.strong && mode !== 'monthly') {
     sent = await notifyAthlete(athlete.id, {
-      title: 'Tohle byl švih! 🚴',
+      title: p.kind === 'winter' ? `${headline('winter', p.text)} 🥶` : 'Tohle byl švih! 🚴',
       body: `${praise} Pošleš za něj dar?`,
       url: `${APP_URL}/svih/${row.strava_id}?intro=1`,
     });

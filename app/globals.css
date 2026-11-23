@@ -520,3 +520,9 @@ h1 { font-weight: 760; }
 .ov-row { padding: 10px 0; border-top: 1px solid var(--line); }
 .ov-row:first-of-type { border-top: 0; }
 .ov-meta { margin-top: 2px; line-height: 1.5; }
+
+/* Zima nad nulou (mood-chill): chladné barvy jako u sněhu, ale bez padajícího sněhu (23. 11.) */
+.ride-intro.mood-chill, .rim.mood-chill { background: radial-gradient(120% 80% at 50% 10%, #ddebea 0%, #c1d9d6 50%, #a6c7c2 100%); }
+.mood-chill .ri-hill-back, .rim.mood-chill .rm-hill-back { fill: #b9d3cd; }
+.mood-chill .ri-hill-front, .rim.mood-chill .rm-hill-front { fill: #80ac9d; }
+.mood-chill .ri-panel { background: rgba(255, 255, 255, .48); }
