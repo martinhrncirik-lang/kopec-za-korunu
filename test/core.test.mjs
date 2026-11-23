@@ -195,3 +195,12 @@ test('texty animace existují pro každý druh, kolo i běh', () => {
   const chill = introTexts({ praise: 'Jízda při 4 °C. Tohle se počítá dvakrát, aspoň morálně.', seed: 1 });
   assert.equal(chill.headline, 'Zima nezima!'); assert.equal(chill.scene.mood, 'chill');
 });
+
+import { averageTemp } from '../lib/weather.js';
+test('teplota z počasí: průměr hodin během jízdy, jinak nejbližší hodina', () => {
+  const hourly = { time: ['2026-11-23T06:00', '2026-11-23T07:00', '2026-11-23T08:00', '2026-11-23T09:00'], temperature_2m: [-2, -1, 0, 1] };
+  const t = (s) => Date.parse(s + 'Z');
+  assert.equal(averageTemp(hourly, t('2026-11-23T07:00'), t('2026-11-23T08:00')), -0.5);
+  assert.equal(averageTemp(hourly, t('2026-11-23T12:00'), t('2026-11-23T13:00')), 1);
+  assert.equal(averageTemp({ time: [], temperature_2m: [] }, 0, 1), null);
+});

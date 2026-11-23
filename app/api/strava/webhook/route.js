@@ -5,6 +5,7 @@ import { validToken, getActivity, getAthleteStats, toRow } from '@/lib/strava';
 import { evaluateActivity, fmtKm } from '@/lib/stats';
 import { notifyAthlete } from '@/lib/push';
 import { headline } from '@/lib/praise-fun';
+import { withWeather } from '@/lib/weather';
 import { getRecipient } from '@/lib/recipients';
 
 // GET: Strava ověřuje webhook při registraci (jednorázově).
@@ -80,6 +81,8 @@ async function handle(ev) {
   }
 
   const { data: existing } = await db().from('activities').select('praise').eq('strava_id', row.strava_id).maybeSingle();
+  // Teplota: ze zařízení, jinak z počasí (jen u nové aktivity – kvůli zimní pochvale)
+  if (ev.aspect_type === 'create' && !existing) await withWeather(row, activity);
   const { error } = await db().from('activities').upsert(row, { onConflict: 'strava_id' });
   if (error) throw error;
 

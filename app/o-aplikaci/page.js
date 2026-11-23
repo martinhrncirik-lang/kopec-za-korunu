@@ -28,6 +28,10 @@ export default function About() {
           svou bankou rovnou na účet organizace, kterou si vybereš. Ze Stravy aplikace bere jen tvoje
           aktivity, aby spočítala kilometry.
         </p>
+        <p className="muted small">
+          Venkovní teplotu k jízdám, u kterých ji neměří tvoje zařízení, dodává{' '}
+          <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo.com</a> (CC BY 4.0).
+        </p>
         <p>
           Nápad, chyba, nebo jen pozdrav? Napiš mi na <a href={`mailto:${EMAIL}`}>{EMAIL}</a>.
         </p>
