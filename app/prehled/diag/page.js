@@ -12,7 +12,8 @@ export default async function Diag({ searchParams }) {
   const uid = await currentAthleteId();
   const me = uid ? await getAthlete(uid) : null;
   if (!isAdmin(me)) notFound();
-  const out = await diagnoseRide(me, (await searchParams)?.id);
+  const sp = await searchParams;
+  const out = await diagnoseRide(me, sp?.id, sp?.apply === '1');
   return (
     <>
       <h1>Diagnostika jízdy</h1>
@@ -20,6 +21,9 @@ export default async function Diag({ searchParams }) {
       <pre style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', fontSize: '.78rem', background: 'var(--card)', border: '1px solid var(--line)', borderRadius: 12, padding: 12 }}>
         {JSON.stringify(out, null, 2)}
       </pre>
+      {!out.prepocitano && out.jizda && (
+        <p><a className="btn" href={`/prehled/diag?id=${out.jizda}&apply=1`}>Přepočítat tuhle jízdu a poslat notifikaci</a></p>
+      )}
       <p><a className="link" href="/prehled">← Přehled</a></p>
     </>
   );
