@@ -68,9 +68,14 @@ test('roční milník po 1000 km', () => {
   assert.equal(judge(ride(10), { ytdBeforeM: 2985000 }), null);
 });
 
-test('slabší pochvaly: zima, ráno, návrat – bez notifikace', () => {
-  const w = judge(ride(20, 0, '2026-11-20T08:00:00', { avg_temp: 1 }), {});
-  assert.equal(w.kind, 'winter'); assert.equal(w.strong, false);
+test('zima pod 5 °C – silná pochvala s notifikací', () => {
+  const w = judge(ride(20, 0, '2026-11-20T08:00:00', { avg_temp: 4 }), {});
+  assert.equal(w.kind, 'winter'); assert.equal(w.strong, true);
+  assert.equal(judge(ride(20, 0, '2026-11-20T08:00:00', { avg_temp: 5 }), {}), null);
+  assert.equal(judge(ride(20, 0, '2026-11-20T08:00:00', { avg_temp: null }), {}), null); // zařízení teplotu neměří
+});
+
+test('slabší pochvaly: ráno, návrat – bez notifikace', () => {
   assert.equal(judge(ride(20, 0, '2026-10-20T05:42:00'), {}).kind, 'early');
   const c = judge(ride(20, 0, '2026-10-20T08:00:00'), { lastBefore: '2026-10-01' });
   assert.equal(c.kind, 'comeback'); assert.match(c.text, /po 19 dnech/);
@@ -184,4 +189,9 @@ test('texty animace existují pro každý druh, kolo i běh', () => {
   assert.equal(introTexts({ praise: 'Letos už 3 000 km. To je 3 000 Kč na dobrou věc.', seed: 1 }).milestone, '3 000');
   // stejná aktivita = stejný vtip
   assert.equal(introTexts({ praise: null, seed: 'a' }).quip, introTexts({ praise: null, seed: 'a' }).quip);
+  // zima: mráz se sněhem, nad nulou bez sněhu
+  const frost = introTexts({ praise: 'Jízda při -2 °C. Tohle se počítá dvakrát, aspoň morálně.', seed: 1 });
+  assert.equal(frost.headline, 'Mráz nemráz!'); assert.equal(frost.scene.mood, 'snow');
+  const chill = introTexts({ praise: 'Jízda při 4 °C. Tohle se počítá dvakrát, aspoň morálně.', seed: 1 });
+  assert.equal(chill.headline, 'Zima nezima!'); assert.equal(chill.scene.mood, 'chill');
 });
