@@ -29,7 +29,7 @@ export default function About() {
           aktivity, aby spočítala kilometry.
         </p>
         <p className="muted small">
-          Venkovní teplotu k jízdám, u kterých ji neměří tvoje zařízení, dodává{' '}
+          Venkovní teplotu k jízdám podle místa startu dodává{' '}
           <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo.com</a> (CC BY 4.0).
         </p>
         <p>
