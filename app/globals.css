@@ -526,3 +526,9 @@ h1 { font-weight: 760; }
 .mood-chill .ri-hill-back, .rim.mood-chill .rm-hill-back { fill: #b9d3cd; }
 .mood-chill .ri-hill-front, .rim.mood-chill .rm-hill-front { fill: #80ac9d; }
 .mood-chill .ri-panel { background: rgba(255, 255, 255, .48); }
+
+/* Pozvánka kámošů na hlavní stránce (hned pod „Darovat už teď") */
+.invite-card { border: 1.5px solid color-mix(in srgb, var(--accent) 45%, var(--line)); background: color-mix(in srgb, var(--accent) 7%, var(--card)); }
+.invite-card h2 { font-size: 1.2rem; margin-bottom: 4px; }
+.invite-card p { margin: 0; color: var(--ink); opacity: .85; }
+.invite-btn { display: block; width: 100%; text-align: center; margin-top: 12px; background: var(--card); }
