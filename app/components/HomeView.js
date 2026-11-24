@@ -11,11 +11,11 @@ import MoreList from './MoreList';
 export const INVITE_TEXT = 'Jezdím, dělám radost sobě a občas i ostatním. Přidej se!';
 
 // Hlavní stránka po přihlášení (jen zobrazení, data dodá app/page.js).
-// Pozvánka je hned pod „Darovat už teď", aby byla vidět bez scrolování.
+// Pořadí (Martin 24. 11.): fotka, dar, Poslední aktivity, Přizvi kámoše, Výpisy.
 export default function HomeView({ athlete, month, km, count, czk, recent, months, last, lastMonth, verdict }) {
   return (
     <>
-      <section className="photo-hero">
+      <section className="photo-hero home">
         <div className="photo-top with-avatar">
           {avatarUrl(athlete) && <img className="avatar" src={avatarUrl(athlete)} alt="" />}
           <h1>Ahoj{athlete.firstname ? ` ${vocative(athlete.firstname)}` : ''}</h1>
@@ -38,14 +38,6 @@ export default function HomeView({ athlete, month, km, count, czk, recent, month
 
       <a className="btn block" href={`/vypis/${month}`}>Darovat už teď</a>
 
-      <section className="card invite-card">
-        <div className="invite-text">
-          <h2>Přizvi kámoše</h2>
-          <p className="small">Nejde o počet. Pozvi toho, kdo to má stejně jako ty, jezdí rád a občas pomůže.</p>
-        </div>
-        <ShareButton label="Poslat pozvánku" className="btn ghost invite-btn" text={INVITE_TEXT} />
-      </section>
-
       {recent.length > 0 && (
         <section className="card">
           <h2>Poslední aktivity</h2>
@@ -61,6 +53,14 @@ export default function HomeView({ athlete, month, km, count, czk, recent, month
           </MoreList>
         </section>
       )}
+
+      <section className="card invite-card">
+        <div className="invite-text">
+          <h2>Přizvi kámoše</h2>
+          <p className="small">Nejde o počet. Pozvi toho, kdo to má stejně jako ty, jezdí rád a občas pomůže.</p>
+        </div>
+        <ShareButton label="Poslat pozvánku" className="btn ghost invite-btn" text={INVITE_TEXT} />
+      </section>
 
       <PushButton compact />
 
