@@ -12,7 +12,8 @@ Webová aplikace (PWA): Next.js na Vercelu, databáze Supabase, data ze Strava A
 - výpis s QR Platbou, tlačítko **2× dar** vygeneruje nový QR s dvojnásobkem,
 - sdílení a pozvánky přes systémové menu telefonu.
 
-Počítají se: Ride, GravelRide, MountainBikeRide, Run, TrailRun. Elektrokola a virtuální jízdy ne
+Počítají se: Ride, GravelRide, MountainBikeRide, VirtualRide (trenažér), Run, TrailRun, VirtualRun. Elektrokola ne;
+trenažér nedostává zimní pochvalu
 (úprava v `lib/config.js`, `SPORT_GROUPS`).
 
 Variabilní symbol: **RRMM + ID sportovce na 6 míst** (říjen 2026, sportovec 1 → `2610000001`).

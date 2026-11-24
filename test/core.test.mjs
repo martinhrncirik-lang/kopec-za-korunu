@@ -204,3 +204,17 @@ test('teplota z počasí: průměr hodin během jízdy, jinak nejbližší hodin
   assert.equal(averageTemp(hourly, t('2026-11-23T12:00'), t('2026-11-23T13:00')), 1);
   assert.equal(averageTemp({ time: [], temperature_2m: [] }, 0, 1), null);
 });
+
+import { sportGroup, isIndoor } from '../lib/config.js';
+import { toRow } from '../lib/strava.js';
+test('trenažér se počítá, ale bez teploty', () => {
+  assert.equal(sportGroup('VirtualRide'), 'ride');
+  assert.equal(sportGroup('VirtualRun'), 'run');
+  assert.equal(sportGroup('EBikeRide'), null);
+  assert.ok(isIndoor({ sport_type: 'VirtualRide' }));
+  assert.ok(isIndoor({ sport_type: 'Ride', trainer: true }));
+  assert.ok(!isIndoor({ sport_type: 'Ride', trainer: false }));
+  const row = toRow(1, { id: 5, sport_type: 'VirtualRide', start_date_local: '2026-11-24T18:00:00Z', distance: 30500, average_temp: 2 });
+  assert.equal(row.distance_m, 30500);
+  assert.equal(row.avg_temp, null);
+});
