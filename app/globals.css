@@ -527,8 +527,9 @@ h1 { font-weight: 760; }
 .mood-chill .ri-hill-front, .rim.mood-chill .rm-hill-front { fill: #80ac9d; }
 .mood-chill .ri-panel { background: rgba(255, 255, 255, .48); }
 
-/* Hlavní stránka: fotka o 10 % nižší (340 → 306 px), pozvánka kámošů pod Posledními aktivitami */
+/* Hlavní stránka: fotka o 10 % nižší (340 → 306 px), bez horní lišty, pozvánka kámošů pod Posledními aktivitami */
 .photo-hero.home { min-height: 306px; }
+body:has(.photo-hero.home) > .top { display: none; } /* bez lišty s logem, aby bylo vidět tlačítko pozvánky (Martin 24. 11.) */
 .invite-card { border: 1.5px solid color-mix(in srgb, var(--accent) 45%, var(--line)); background: color-mix(in srgb, var(--accent) 7%, var(--card)); }
 .invite-card h2 { font-size: 1.2rem; margin-bottom: 4px; }
 .invite-card p { margin: 0; color: var(--ink); opacity: .85; }
