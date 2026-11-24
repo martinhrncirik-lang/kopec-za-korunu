@@ -534,3 +534,8 @@ body:has(.photo-hero.home) > .top { display: none; } /* bez lišty s logem, aby 
 .invite-card h2 { font-size: 1.2rem; margin-bottom: 4px; }
 .invite-card p { margin: 0; color: var(--ink); opacity: .85; }
 .invite-btn { display: block; width: 100%; text-align: center; margin-top: 12px; background: var(--card); }
+
+/* O aplikaci: uvedení zdroje počasí úplně dole drobně; odkaz „O aplikaci" v patičce tu nedává smysl */
+.credit { margin: 32px 0 0; text-align: center; font-size: .72rem; color: var(--muted); }
+.credit a { color: var(--muted); }
+body:has(.credit) .foot { display: none; }
