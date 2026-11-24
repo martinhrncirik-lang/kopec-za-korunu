@@ -16,6 +16,7 @@ export default async function Overview() {
     <>
       <OverviewView data={await overviewData()} />
       <p><a className="btn ghost" href="/prehled/diag">Diagnostika poslední jízdy</a></p>
+      <p><a className="btn ghost" href="/prehled/doplnit">Doplnit jízdy od 1. 11. (trenažér)</a></p>
     </>
   );
 }
