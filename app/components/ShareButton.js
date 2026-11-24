@@ -2,7 +2,7 @@
 
 // Sdílení přes systémové menu telefonu (WhatsApp, Instagram, Messenger…).
 // Sdílí jen text a odkaz na aplikaci, ne data ze Stravy o jiných lidech.
-export default function ShareButton({ text, label = 'Sdílet' }) {
+export default function ShareButton({ text, label = 'Sdílet', className = 'btn ghost' }) {
   async function share() {
     const url = window.location.origin;
     if (navigator.share) {
@@ -12,5 +12,5 @@ export default function ShareButton({ text, label = 'Sdílet' }) {
       alert('Zkopírováno do schránky.');
     }
   }
-  return <button className="btn ghost" onClick={share}>{label}</button>;
+  return <button className={className} onClick={share}>{label}</button>;
 }
