@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getAthlete } from '@/lib/db';
 import { currentAthleteId } from '@/lib/session';
@@ -15,7 +16,7 @@ export default async function Overview() {
   return (
     <>
       <OverviewView data={await overviewData()} />
-      <p><a className="btn ghost" href="/prehled/diag">Diagnostika poslední jízdy</a></p>
+      <p><Link className="btn ghost" href="/prehled/diag">Diagnostika poslední jízdy</Link></p>
     </>
   );
 }

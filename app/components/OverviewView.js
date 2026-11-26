@@ -1,3 +1,4 @@
+import BackLink from '@/app/components/BackLink';
 import { getRecipient } from '@/lib/recipients';
 
 const fmtDate = (d, utc) => d ? new Date(utc ? d + 'Z' : d).toLocaleDateString('cs-CZ', { day: 'numeric', month: 'numeric', timeZone: utc ? 'UTC' : 'Europe/Prague' }) : '–';
@@ -34,7 +35,7 @@ export default function OverviewView({ data, limit = 10 }) {
         {' '}Poslední měsíční výpis: {lastCron ? `${fmtDate(lastCron.received_at)} – ${lastCron.result || 'bez výsledku'}` : 'za posledních 7 dní žádný'}.
       </p>
       <p className="muted small">Přehled vidíš jen ty. Kilometry ostatních tu nejsou (podmínky Stravy: data sportovce smí vidět jen on) a peníze taky ne – appka neví, kdo co poslal.</p>
-      <p><a className="link" href="/">← Zpět</a></p>
+      <p><BackLink /></p>
     </>
   );
 }

@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { monthLabel } from '@/lib/months';
 import { RATE_CZK_PER_KM } from '@/lib/config';
 import { fmtKm } from '@/lib/stats';
@@ -19,7 +20,7 @@ export default function HomeView({ athlete, month, km, count, czk, recent, month
         <div className="photo-top with-avatar">
           {avatarUrl(athlete) && <img className="avatar" src={avatarUrl(athlete)} alt="" />}
           <h1>Ahoj{athlete.firstname ? ` ${vocative(athlete.firstname)}` : ''}</h1>
-          <a className="gear" href="/nastaveni" aria-label="Nastavení">⚙</a>
+          <Link className="gear" href="/nastaveni" aria-label="Nastavení">⚙</Link>
         </div>
         <div className="photo-bottom">
           <p className="photo-label">{monthLabel(month)} zatím</p>
@@ -29,14 +30,14 @@ export default function HomeView({ athlete, month, km, count, czk, recent, month
       </section>
 
       {last && last.count > 0 && (
-        <a className="card statement-ready" href={`/vypis/${lastMonth}`}>
+        <Link className="card statement-ready" href={`/vypis/${lastMonth}`}>
           <span className="statement-title">Výpis za {monthLabel(lastMonth).toLowerCase()} je připravený</span>
           <span>{fmtKm(last.km)} km = {Math.round(last.km * RATE_CZK_PER_KM).toLocaleString('cs-CZ')} Kč · otevřít QR kód</span>
           {verdict && <span className="statement-verdict">{verdict}</span>}
-        </a>
+        </Link>
       )}
 
-      <a className="btn block" href={`/vypis/${month}`}>Darovat už teď</a>
+      <Link className="btn block" href={`/vypis/${month}`}>Darovat už teď</Link>
 
       {recent.length > 0 && (
         <section className="card">
@@ -44,10 +45,10 @@ export default function HomeView({ athlete, month, km, count, czk, recent, month
           <MoreList>
             {recent.map((r) => (
               <li key={r.strava_id}>
-                <a href={`/svih/${r.strava_id}?intro=1`}>
+                <Link href={`/svih/${r.strava_id}?intro=1`}>
                   {new Date(r.start_local + 'Z').toLocaleDateString('cs-CZ', { day: 'numeric', month: 'numeric', timeZone: 'UTC' })}
                   {' · '}{fmtKm(r.distance_m / 1000)} km{r.praise ? (r.praise_strong === false ? ' · 👍' : ' · ⭐ švih') : ''}
-                </a>
+                </Link>
               </li>
             ))}
           </MoreList>
@@ -68,7 +69,7 @@ export default function HomeView({ athlete, month, km, count, czk, recent, month
         <section className="card">
           <h2>Výpisy</h2>
           <MoreList>
-            {months.map((m) => <li key={m}><a href={`/vypis/${m}`}>{monthLabel(m)}</a></li>)}
+            {months.map((m) => <li key={m}><Link href={`/vypis/${m}`}>{monthLabel(m)}</Link></li>)}
           </MoreList>
         </section>
       )}

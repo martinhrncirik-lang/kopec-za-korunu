@@ -1,3 +1,5 @@
+import Link from 'next/link';
+import BackLink from '@/app/components/BackLink';
 import { notFound, redirect } from 'next/navigation';
 import { db, getAthlete } from '@/lib/db';
 import { currentAthleteId } from '@/lib/session';
@@ -134,7 +136,7 @@ export default async function Svih({ params, searchParams }) {
       </section>
 
       <ShareButton text={`${a.praise ? a.praise + ' ' : `${fmtKm(km)} km na kole. `}Každý kilometr = koruna na dobrou věc.`} />
-      <p><a className="link" href="/">← Zpět</a> · <a className="link" href={`/svih/${id}?intro=2`}>▶ Přehrát animaci</a></p>
+      <p><BackLink /> · <Link className="link" href={`/svih/${id}?intro=2`}>▶ Přehrát animaci</Link></p>
     </>
   );
 }

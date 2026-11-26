@@ -552,3 +552,9 @@ body:has(.photo-hero.home) > .top { display: none; } /* bez lišty s logem, aby 
 .legal ul { padding-left: 18px; margin: 6px 0; }
 .legal li { margin: 4px 0; }
 .intro .small a { color: inherit; }
+
+/* Načítání stránky (app/loading.js) */
+.page-loading { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 50vh; gap: 6px; }
+.page-loading-coin { width: 56px; height: 56px; animation: kzk-spin 1.1s linear infinite; }
+@keyframes kzk-spin { from { transform: rotateY(0); } to { transform: rotateY(360deg); } }
+@media (prefers-reduced-motion: reduce) { .page-loading-coin { animation: none; } }

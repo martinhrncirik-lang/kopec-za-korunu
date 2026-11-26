@@ -1,5 +1,6 @@
 // Zásady ochrany osobních údajů. Veřejná stránka, odkaz v patičce.
 // Při změně toho, co aplikace ze Stravy bere nebo jak dlouho to drží, upravit i tady (API Policy 7.2: uživatele informovat).
+import BackLink from '@/app/components/BackLink';
 export const metadata = { title: 'Soukromí – Kopec za korunu' };
 
 const EMAIL = 'martin.hrncirik@gmail.com';
@@ -74,7 +75,7 @@ export default function Privacy() {
           v aplikaci.
         </p>
       </section>
-      <p><a className="link" href="/">← Zpět</a></p>
+      <p><BackLink /></p>
     </>
   );
 }

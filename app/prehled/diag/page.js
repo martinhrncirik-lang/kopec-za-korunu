@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getAthlete } from '@/lib/db';
 import { currentAthleteId } from '@/lib/session';
@@ -24,7 +25,7 @@ export default async function Diag({ searchParams }) {
       {!out.prepocitano && out.jizda && (
         <p><a className="btn" href={`/prehled/diag?id=${out.jizda}&apply=1`}>Přepočítat tuhle jízdu a poslat notifikaci</a></p>
       )}
-      <p><a className="link" href="/prehled">← Přehled</a></p>
+      <p><Link className="link" href="/prehled">← Přehled</Link></p>
     </>
   );
 }
