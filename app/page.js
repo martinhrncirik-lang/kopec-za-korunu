@@ -1,11 +1,10 @@
-import { getAthlete, monthSummary, monthsWithData } from '@/lib/db';
+import { getAthlete } from '@/lib/db';
 import { currentAthleteId } from '@/lib/session';
 import { currentMonth, previousMonth } from '@/lib/months';
 import { RATE_CZK_PER_KM } from '@/lib/config';
-import { syncRecent, recentActivities } from '@/lib/sync';
+import { syncRecent, praiseFor } from '@/lib/sync';
+import { fetchMonths, summarize, monthMinus } from '@/lib/history';
 import { ensureLastname } from '@/lib/strava';
-import { backfill } from '@/lib/strava';
-import { after } from 'next/server';
 import { vocative } from '@/lib/vocative';
 import Welcome from './components/Welcome';
 import HomeView from './components/HomeView';
@@ -18,6 +17,8 @@ const ERRORS = {
   zamitnuto: 'Přihlášení přes Stravu bylo zrušeno.',
   state: 'Přihlášení vypršelo, zkus to znovu.',
   opravneni: 'Bez přístupu k aktivitám to nepůjde. Při přihlášení nech zaškrtnuté zobrazení aktivit.',
+  plno: 'Kopec je teď plný: Strava zatím povoluje jen omezený počet sportovců. Pracuju na tom, aby se míst uvolnilo víc. Napiš mi na martin.hrncirik@gmail.com a ozvu se, až to půjde.',
+  strava: 'Strava teď přihlášení nedokončila. Zkus to prosím za chvíli znovu.',
 };
 
 export default async function Home({ searchParams }) {
@@ -45,29 +46,34 @@ export default async function Home({ searchParams }) {
           <p>A když zrovna nepošleš nic, je to taky v pořádku. Třeba pošleš někdy jindy.</p>
           {sp?.chyba && <p className="error">{ERRORS[sp.chyba] || 'Něco se pokazilo.'}</p>}
           {sp?.odpojeno && <p className="muted">Odpojeno, tvoje data jsou smazaná. Dveře zůstávají otevřené.</p>}
-          <a className="btn strava" href="/api/auth/login">Připojit přes Stravu</a>
+          <a className="strava-connect" href="/api/auth/login">
+            <img src="/strava/btn_strava_connect_with_orange.svg" alt="Connect with Strava" />
+          </a>
+          <p className="muted small">Připojením souhlasíš s <a href="/podminky">podmínkami</a> a bereš na vědomí <a href="/soukromi">zásady ochrany osobních údajů</a>.</p>
         </section>
       </>
     );
   }
 
-  // Jednorázově: historie od začátku roku pro uživatele z doby před v0.4 (na pozadí).
-  if (!athlete.history_since) after(() => backfill(athlete).catch((e) => console.error('backfill', e)));
-
   // Pojistka: doplní jízdy, které nedorazily přes webhook.
   try { await syncRecent(athlete); } catch (e) { console.error('sync', e); }
 
+  // Posledních ~6 měsíců živě ze Stravy (nic se neukládá): tento měsíc, poslední jízdy, seznam výpisů.
   const month = currentMonth();
-  const { km, count } = await monthSummary(athlete.id, month);
-  const recent = await recentActivities(athlete.id, 5);
+  let rows = [];
+  try { rows = await fetchMonths(athlete, monthMinus(month, 6), month); } catch (e) { console.error('history', e); }
+  const { km, count } = summarize(rows, month);
+  const latest = rows.slice(-5).reverse();
+  const praise = await praiseFor(latest.map((r) => r.strava_id));
+  const recent = latest.map((r) => ({ ...r, ...(praise.get(String(r.strava_id)) || { praise: null, praise_strong: false }) }));
   const czk = Math.round(km * RATE_CZK_PER_KM);
-  const months = (await monthsWithData(athlete.id)).filter((m) => m !== month).slice(0, 6);
+  const months = [...new Set(rows.map((r) => r.month))].filter((m) => m !== month).reverse().slice(0, 6);
   // Prvních 5 dní v měsíci: karta s výpisem za minulý měsíc (pojistka, kdyby notifikace nedorazila).
   const dayOfMonth = Number(new Intl.DateTimeFormat('cs-CZ', { timeZone: 'Europe/Prague', day: 'numeric' }).format(new Date()));
   const lastMonth = previousMonth(month);
-  const last = dayOfMonth <= 5 ? await monthSummary(athlete.id, lastMonth) : null;
+  const last = dayOfMonth <= 5 ? summarize(rows, lastMonth) : null;
   let verdict = null;
-  if (last?.count) { try { verdict = await monthVerdictFor(athlete.id, lastMonth); } catch (e) { console.error('verdict', e); } }
+  if (last?.count) { try { verdict = await monthVerdictFor(athlete, lastMonth); } catch (e) { console.error('verdict', e); } }
 
   return (
     <HomeView

@@ -45,6 +45,10 @@ export default function SettingsView({ athlete }) {
           customUrl={athlete.avatar_url}
         />
       </Item>
+      <Item title="Odpojit Stravu" value="a smazat data">
+        <p className="muted small">Zruší přístup Kopce k tvé Stravě a hned smaže všechno, co o tobě aplikace má: aktivity, nastavení i odběr notifikací. Na Stravě se nic nezmění.</p>
+        <form action="/api/welcome/leave" method="post"><button className="btn danger">Odpojit a smazat</button></form>
+      </Item>
       <p className="muted small">Změna se uloží hned, hodnota v záhlaví položky se obnoví po načtení stránky.</p>
       <p><a className="link" href="/">← Zpět</a></p>
     </>

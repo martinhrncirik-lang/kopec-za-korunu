@@ -1,12 +1,14 @@
 import { after } from 'next/server';
 import { APP_URL, RATE_CZK_PER_KM } from '@/lib/config';
-import { db, getAthleteByStravaId, monthSummary } from '@/lib/db';
+import { db, getAthleteByStravaId } from '@/lib/db';
+import { fetchPraiseHistory, summarize } from '@/lib/history';
 import { validToken, getActivity, getAthleteStats, toRow } from '@/lib/strava';
 import { evaluateActivity, fmtKm } from '@/lib/stats';
 import { notifyAthlete } from '@/lib/push';
 import { headline } from '@/lib/praise-fun';
 import { withWeather } from '@/lib/weather';
 import { getRecipient } from '@/lib/recipients';
+import { eraseAthlete } from '@/lib/erase';
 
 // GET: Strava ověřuje webhook při registraci (jednorázově).
 export async function GET(req) {
@@ -54,7 +56,7 @@ async function handle(ev) {
 
   // Sportovec odpojil aplikaci ve Stravě → podle podmínek smažeme jeho data.
   if (ev.object_type === 'athlete' && ev.updates?.authorized === 'false') {
-    await db().from('athletes').delete().eq('id', athlete.id); // aktivity a odběry kaskádou
+    await eraseAthlete(athlete.id); // aktivity, odběry i vlastní profilovka
     return 'sportovec odhlášen, data smazána';
   }
   if (ev.object_type !== 'activity') return `přeskočeno: ${ev.object_type}`;
@@ -94,10 +96,13 @@ async function handle(ev) {
   if (!['Run', 'TrailRun'].includes(row.sport_type)) {
     try { stats = await getAthleteStats(token, athlete.strava_id); } catch (e) { console.error('stats', e.status); }
   }
-  const p = await evaluateActivity(row, { stats });
+  // Historie živě ze Stravy (od začátku roku / 12 týdnů zpět, včetně této jízdy) – pro pochvalu i součet měsíce
+  const history = await fetchPraiseHistory(athlete, row.start_local);
+  const p = await evaluateActivity(row, { stats, history, athlete });
   const praise = p?.text;
   const km = row.distance_m / 1000;
-  const { km: monthKm } = await monthSummary(athlete.id, row.month);
+  const inHistory = history.some((x) => String(x.strava_id) === String(row.strava_id));
+  const monthKm = summarize(history, row.month).km + (inHistory ? 0 : km);
   const monthCzk = Math.round(monthKm * RATE_CZK_PER_KM);
 
   let sent;

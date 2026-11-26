@@ -218,3 +218,31 @@ test('trenažér se počítá, ale bez teploty', () => {
   assert.equal(row.distance_m, 30500);
   assert.equal(row.avg_temp, null);
 });
+
+// 26. 11. 2026: pochvaly z živé historie (lib/history.js) místo databáze
+import { praiseContext } from '../lib/stats.js';
+import { monthVerdictFor } from '../lib/monthly.js';
+const H = (id, start, km, type = 'Ride', elev = 0) => ({ strava_id: id, start_local: start, month: start.slice(0, 7), distance_m: km * 1000, elevation_m: elev, sport_type: type });
+
+test('praiseContext: vyřadí hodnocenou i pozdější jízdy, běh nemíchá do 12 týdnů kola', () => {
+  const row = H(5, '2026-11-20T10:00:00', 30);
+  const hist = [H(1, '2026-11-10T10:00:00', 40), H(2, '2026-11-19T10:00:00', 10, 'Run'), row, H(6, '2026-11-25T10:00:00', 99)];
+  const ctx = praiseContext(row, hist);
+  assert.deepEqual(ctx.prev12w.map((x) => x.strava_id), [1]);
+  assert.equal(ctx.lastBefore, '2026-11-19');
+  assert.equal(ctx.ytdBeforeM, 50000);
+});
+
+test('praiseContext: série přes Nový rok se spojí', () => {
+  const row = H(3, '2027-01-01T10:00:00', 20);
+  const ctx = praiseContext(row, [H(1, '2026-12-30T10:00:00', 20), H(2, '2026-12-31T10:00:00', 20), row]);
+  assert.equal(judge(row, ctx)?.kind, 'streak');
+  assert.equal(ctx.ytdBeforeM, 0); // roční součet začíná od 1. 1.
+});
+
+test('monthVerdictFor: z předaných řádků, měsíce před první jízdou se nesrovnávají', async () => {
+  const rows = [H(1, '2026-09-05T10:00:00', 300), H(2, '2026-10-05T10:00:00', 200), H(3, '2026-11-05T10:00:00', 500)];
+  const v = await monthVerdictFor({ id: 1 }, '2026-11', rows);
+  assert.match(v, /od září/);
+  assert.equal(await monthVerdictFor({ id: 1 }, '2026-08', rows), null);
+});
