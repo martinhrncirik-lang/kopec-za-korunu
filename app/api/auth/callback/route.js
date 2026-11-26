@@ -18,7 +18,15 @@ export async function GET(req) {
   if (!state || state !== jar.get('kzk_oauth_state')?.value) return NextResponse.redirect(`${APP_URL}/?chyba=state`);
   if (!scope.includes('activity:read')) return NextResponse.redirect(`${APP_URL}/?chyba=opravneni`);
 
-  const t = await exchangeCode(code);
+  let t;
+  try {
+    t = await exchangeCode(code);
+  } catch (e) {
+    // Nad limitem sportovců Strava výměnu kódu odmítne (403 „Limit of connected athletes exceeded“).
+    console.error('token exchange', e);
+    const full = /\b403\b/.test(e.message) && /limit/i.test(e.message);
+    return NextResponse.redirect(`${APP_URL}/?chyba=${full ? 'plno' : 'strava'}`);
+  }
   // Je to první propojení? (Po odpojení se data mažou, takže návrat se počítá jako nový.)
   const { data: existing } = await db().from('athletes').select('id').eq('strava_id', t.athlete.id).maybeSingle();
   const { data: athlete, error } = await db()

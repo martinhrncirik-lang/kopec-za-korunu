@@ -22,7 +22,10 @@ export default function RootLayout({ children }) {
           </a>
         </header>
         <main>{children}</main>
-        <footer className="foot"><a href="/o-aplikaci">O aplikaci</a></footer>
+        <footer className="foot">
+          <nav><a href="/o-aplikaci">O aplikaci</a> · <a href="/soukromi">Soukromí</a> · <a href="/podminky">Podmínky</a></nav>
+          <img className="powered-strava" src="/strava/api_logo_pwrdBy_strava_horiz_orange.svg" alt="Powered by Strava" />
+        </footer>
       </body>
     </html>
   );

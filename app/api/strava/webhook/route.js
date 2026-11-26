@@ -7,6 +7,7 @@ import { notifyAthlete } from '@/lib/push';
 import { headline } from '@/lib/praise-fun';
 import { withWeather } from '@/lib/weather';
 import { getRecipient } from '@/lib/recipients';
+import { eraseAthlete } from '@/lib/erase';
 
 // GET: Strava ověřuje webhook při registraci (jednorázově).
 export async function GET(req) {
@@ -54,7 +55,7 @@ async function handle(ev) {
 
   // Sportovec odpojil aplikaci ve Stravě → podle podmínek smažeme jeho data.
   if (ev.object_type === 'athlete' && ev.updates?.authorized === 'false') {
-    await db().from('athletes').delete().eq('id', athlete.id); // aktivity a odběry kaskádou
+    await eraseAthlete(athlete.id); // aktivity, odběry i vlastní profilovka
     return 'sportovec odhlášen, data smazána';
   }
   if (ev.object_type !== 'activity') return `přeskočeno: ${ev.object_type}`;

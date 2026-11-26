@@ -24,6 +24,11 @@ export async function GET(req) {
     return new Response('Unauthorized', { status: 401 });
   }
 
+  // Úklid deníku: technické záznamy starší 60 dní mažeme (zásady ochrany osobních údajů slibují nejvýš 90 dní).
+  try {
+    await db().from('webhook_events').delete().lt('received_at', new Date(Date.now() - 60 * 864e5).toISOString());
+  } catch (e) { console.error('cleanup', e); }
+
   const month = previousMonth(currentMonth());
   const { data: athletes, error } = await db().from('athletes').select('id');
   if (error) {

@@ -123,8 +123,9 @@ export default async function Svih({ params, searchParams }) {
           ))}
         </dl>
         <a className="strava-link" href={`https://www.strava.com/activities/${id}`} target="_blank" rel="noopener">
-          Zobrazit na Stravě
+          View on Strava
         </a>
+        {/^garmin/i.test(s?.device_name || '') && <p className="device-credit muted small">{s.device_name}</p>}
       </section>
 
       <ShareButton text={`${a.praise ? a.praise + ' ' : `${fmtKm(km)} km na kole. `}Každý kilometr = koruna na dobrou věc.`} />

@@ -18,6 +18,8 @@ const ERRORS = {
   zamitnuto: 'Přihlášení přes Stravu bylo zrušeno.',
   state: 'Přihlášení vypršelo, zkus to znovu.',
   opravneni: 'Bez přístupu k aktivitám to nepůjde. Při přihlášení nech zaškrtnuté zobrazení aktivit.',
+  plno: 'Kopec je teď plný: Strava zatím povoluje jen omezený počet sportovců. Pracuju na tom, aby se míst uvolnilo víc. Napiš mi na martin.hrncirik@gmail.com a ozvu se, až to půjde.',
+  strava: 'Strava teď přihlášení nedokončila. Zkus to prosím za chvíli znovu.',
 };
 
 export default async function Home({ searchParams }) {
@@ -45,7 +47,10 @@ export default async function Home({ searchParams }) {
           <p>A když zrovna nepošleš nic, je to taky v pořádku. Třeba pošleš někdy jindy.</p>
           {sp?.chyba && <p className="error">{ERRORS[sp.chyba] || 'Něco se pokazilo.'}</p>}
           {sp?.odpojeno && <p className="muted">Odpojeno, tvoje data jsou smazaná. Dveře zůstávají otevřené.</p>}
-          <a className="btn strava" href="/api/auth/login">Připojit přes Stravu</a>
+          <a className="strava-connect" href="/api/auth/login">
+            <img src="/strava/btn_strava_connectwith_orange.svg" alt="Connect with Strava" />
+          </a>
+          <p className="muted small">Připojením souhlasíš s <a href="/podminky">podmínkami</a> a bereš na vědomí <a href="/soukromi">zásady ochrany osobních údajů</a>.</p>
         </section>
       </>
     );
