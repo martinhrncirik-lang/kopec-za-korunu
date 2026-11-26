@@ -1,6 +1,7 @@
+import { Suspense } from 'react';
 import { notFound, redirect } from 'next/navigation';
 import { getAthlete } from '@/lib/db';
-import { fetchMonths, summarize, monthMinus } from '@/lib/history';
+import { fetchMonths, summarize } from '@/lib/history';
 import { pickRecipientId } from '@/lib/recipients';
 import { monthVerdictFor } from '@/lib/monthly';
 import { currentMonth } from '@/lib/months';
@@ -23,12 +24,10 @@ export default async function Statement({ params, searchParams }) {
 
   const athlete = await getAthlete(athleteId);
   if (!athlete) redirect('/');
-  // Živě ze Stravy: daný měsíc a 12 měsíců před ním (kvůli hodnoticí větě). Nic se neukládá.
+  // Živě ze Stravy jen daný měsíc (nic se neukládá). Hodnoticí věta potřebuje 12 měsíců zpět,
+  // proto se dopočítá zvlášť a dorazí do stránky dodatečně (Suspense), částka a QR nečekají.
   const past = mesic < currentMonth();
-  const rows = await fetchMonths(athlete, past ? monthMinus(mesic, 12) : mesic, mesic);
-  const { km, count } = summarize(rows, mesic);
-  let verdict = null;
-  if (count && past) { try { verdict = await monthVerdictFor(athlete, mesic, rows); } catch (e) { console.error('verdict', e); } }
+  const { km, count } = summarize(await fetchMonths(athlete, mesic), mesic);
   const isDouble = sp?.x === '2';
   const base = Math.round(km * RATE_CZK_PER_KM);
   const amount = base * (isDouble ? 2 : 1);
@@ -39,7 +38,7 @@ export default async function Statement({ params, searchParams }) {
       <section className="card stat">
         <p className="big">{fmtKm(km)} km</p>
         <p>{count} aktivit · {RATE_CZK_PER_KM} Kč/km · {base.toLocaleString('cs-CZ')} Kč</p>
-        {verdict && <p className="statement-verdict">{verdict}</p>}
+        {count > 0 && past && <Suspense fallback={null}><Verdict athlete={athlete} month={mesic} /></Suspense>}
       </section>
       <DonationCard
         amount={amount}
@@ -55,4 +54,10 @@ export default async function Statement({ params, searchParams }) {
       )}
     </>
   );
+}
+
+async function Verdict({ athlete, month }) {
+  let verdict = null;
+  try { verdict = await monthVerdictFor(athlete, month); } catch (e) { console.error('verdict', e); }
+  return verdict ? <p className="statement-verdict">{verdict}</p> : null;
 }

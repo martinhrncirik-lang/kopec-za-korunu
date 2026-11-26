@@ -1,4 +1,5 @@
 // Stránka o aplikaci a jejím autorovi. Veřejná, bez přihlášení.
+import BackLink from '@/app/components/BackLink';
 export const metadata = { title: 'O aplikaci – Kopec za korunu' };
 
 const PHOTO = '/o-aplikaci/martin.jpg';
@@ -32,7 +33,7 @@ export default function About() {
           Nápad, chyba, nebo jen pozdrav? Napiš mi na <a href={`mailto:${EMAIL}`}>{EMAIL}</a>.
         </p>
       </section>
-      <p><a className="link" href="/">← Zpět</a></p>
+      <p><BackLink /></p>
       <p className="credit">
         Data o počasí: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo.com</a> (CC BY 4.0)
       </p>

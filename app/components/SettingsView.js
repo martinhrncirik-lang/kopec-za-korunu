@@ -1,3 +1,4 @@
+import BackLink from '@/app/components/BackLink';
 import AvatarSettings from '@/app/components/AvatarSettings';
 import PushButton from '@/app/components/PushButton';
 import RecipientSettings from '@/app/components/RecipientSettings';
@@ -50,7 +51,7 @@ export default function SettingsView({ athlete }) {
         <form action="/api/welcome/leave" method="post"><button className="btn danger">Odpojit a smazat</button></form>
       </Item>
       <p className="muted small">Změna se uloží hned, hodnota v záhlaví položky se obnoví po načtení stránky.</p>
-      <p><a className="link" href="/">← Zpět</a></p>
+      <p><BackLink /></p>
     </>
   );
 }

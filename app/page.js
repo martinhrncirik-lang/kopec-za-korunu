@@ -1,3 +1,5 @@
+import Link from 'next/link';
+import { after } from 'next/server';
 import { getAthlete } from '@/lib/db';
 import { currentAthleteId } from '@/lib/session';
 import { currentMonth, previousMonth } from '@/lib/months';
@@ -49,14 +51,14 @@ export default async function Home({ searchParams }) {
           <a className="strava-connect" href="/api/auth/login">
             <img src="/strava/btn_strava_connect_with_orange.svg" alt="Connect with Strava" />
           </a>
-          <p className="muted small">Připojením souhlasíš s <a href="/podminky">podmínkami</a> a bereš na vědomí <a href="/soukromi">zásady ochrany osobních údajů</a>.</p>
+          <p className="muted small">Připojením souhlasíš s <Link href="/podminky">podmínkami</Link> a bereš na vědomí <Link href="/soukromi">zásady ochrany osobních údajů</Link>.</p>
         </section>
       </>
     );
   }
 
-  // Pojistka: doplní jízdy, které nedorazily přes webhook.
-  try { await syncRecent(athlete); } catch (e) { console.error('sync', e); }
+  // Pojistka: doplní jízdy, které nedorazily přes webhook. Běží až po odeslání stránky, ať se nečeká.
+  after(() => syncRecent(athlete).catch((e) => console.error('sync', e)));
 
   // Posledních ~6 měsíců živě ze Stravy (nic se neukládá): tento měsíc, poslední jízdy, seznam výpisů.
   const month = currentMonth();

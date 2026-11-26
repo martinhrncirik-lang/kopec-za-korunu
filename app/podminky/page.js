@@ -1,4 +1,6 @@
 // Podmínky používání. Veřejná stránka, odkaz v patičce.
+import Link from 'next/link';
+import BackLink from '@/app/components/BackLink';
 export const metadata = { title: 'Podmínky – Kopec za korunu' };
 
 const EMAIL = 'martin.hrncirik@gmail.com';
@@ -48,10 +50,10 @@ export default function Terms() {
         <h2>Kontakt</h2>
         <p>
           Dotazy a připomínky na <a href={`mailto:${EMAIL}`}>{EMAIL}</a>. Jak aplikace zachází s údaji, popisují{' '}
-          <a href="/soukromi">zásady ochrany osobních údajů</a>.
+          <Link href="/soukromi">zásady ochrany osobních údajů</Link>.
         </p>
       </section>
-      <p><a className="link" href="/">← Zpět</a></p>
+      <p><BackLink /></p>
     </>
   );
 }

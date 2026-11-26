@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { getAthlete } from '@/lib/db';
 import { currentAthleteId } from '@/lib/session';
@@ -17,7 +18,7 @@ export default async function Settings() {
   return (
     <>
       <SettingsView athlete={athlete} />
-      {isAdmin(athlete) && <p><a className="link" href="/prehled">Přehled (vidíš jen ty)</a></p>}
+      {isAdmin(athlete) && <p><Link className="link" href="/prehled">Přehled (vidíš jen ty)</Link></p>}
       <form action="/api/auth/logout" method="post"><button className="link">Odhlásit</button></form>
     </>
   );

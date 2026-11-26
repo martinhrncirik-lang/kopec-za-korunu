@@ -1,7 +1,7 @@
 import { after } from 'next/server';
 import { APP_URL, RATE_CZK_PER_KM } from '@/lib/config';
 import { db, getAthleteByStravaId } from '@/lib/db';
-import { fetchPraiseHistory, summarize } from '@/lib/history';
+import { fetchPraiseHistory, summarize, forgetAthlete } from '@/lib/history';
 import { validToken, getActivity, getAthleteStats, toRow } from '@/lib/strava';
 import { evaluateActivity, fmtKm } from '@/lib/stats';
 import { notifyAthlete } from '@/lib/push';
@@ -61,6 +61,7 @@ async function handle(ev) {
   }
   if (ev.object_type !== 'activity') return `přeskočeno: ${ev.object_type}`;
 
+  forgetAthlete(athlete.id); // změna na Stravě → krátká paměť historie neplatí
   if (ev.aspect_type === 'delete') {
     await db().from('activities').delete().eq('strava_id', ev.object_id);
     return 'aktivita smazána';
@@ -97,7 +98,8 @@ async function handle(ev) {
     try { stats = await getAthleteStats(token, athlete.strava_id); } catch (e) { console.error('stats', e.status); }
   }
   // Historie živě ze Stravy (od začátku roku / 12 týdnů zpět, včetně této jízdy) – pro pochvalu i součet měsíce
-  const history = await fetchPraiseHistory(athlete, row.start_local);
+  forgetAthlete(athlete.id);
+  const history = await fetchPraiseHistory(athlete, row.start_local, { fresh: true });
   const p = await evaluateActivity(row, { stats, history, athlete });
   const praise = p?.text;
   const km = row.distance_m / 1000;
