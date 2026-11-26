@@ -26,8 +26,9 @@ export default function Privacy() {
           <li><strong>Technické údaje:</strong> odběr notifikací tvého zařízení a deník technických zpráv od Stravy (čísla aktivit a výsledek zpracování).</li>
         </ul>
         <p>
-          Měsíční součty, výpisy, rekordy i mapu trasy aplikace načítá ze Stravy vždy ve chvíli, kdy je potřebuje,
-          a trvale je neukládá. Místo startu se neukládá vůbec, použije se jen jednou k zjištění teploty (viz níže).
+          Měsíční součty, výpisy a rekordy aplikace načítá ze Stravy vždy ve chvíli, kdy je potřebuje, a trvale je
+          neukládá. Při otevření detailu jízdy se navíc živě načtou její podrobnosti (mapa trasy, rychlost, tep,
+          výkon, nadmořská výška, zařízení). Zobrazí se jen tobě a neukládají se. Místo startu se neukládá vůbec, použije se jen jednou k zjištění teploty (viz níže).
         </p>
 
         <h2>Proč a na jakém základě</h2>
