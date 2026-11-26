@@ -83,7 +83,10 @@ async function handle(ev) {
     return `nepočítá se: ${activity.sport_type}`;
   }
 
-  const { data: existing } = await db().from('activities').select('praise').eq('strava_id', row.strava_id).maybeSingle();
+  const { data: existing } = await db().from('activities').select('praise, avg_temp').eq('strava_id', row.strava_id).maybeSingle();
+  // Úprava už uložené jízdy (název apod.): teplotu z počasí nepřepisovat teplotou ze zařízení na zápěstí
+  // (25. 11.: 0,6 °C z počasí přepsáno na 6 °C z vívosmartu → zimní pochvala při přepočtu zmizela).
+  if (existing) row.avg_temp = existing.avg_temp;
   // Teplota: ze zařízení, jinak z počasí (jen u nové aktivity – kvůli zimní pochvale)
   const tempInfo = ev.aspect_type === 'create' && !existing ? await withWeather(row, activity) : '';
   const { error } = await db().from('activities').upsert(row, { onConflict: 'strava_id' });
