@@ -4,7 +4,7 @@ import { currentAthleteId } from '@/lib/session';
 import { RATE_CZK_PER_KM } from '@/lib/config';
 import { variableSymbol, donationMessage } from '@/lib/spayd';
 import { fmtKm } from '@/lib/stats';
-import { validToken, getActivity } from '@/lib/strava';
+import { validToken, getActivity, toRow } from '@/lib/strava';
 import DonationCard from '@/app/components/DonationCard';
 import ShareButton from '@/app/components/ShareButton';
 import RouteMap from '@/app/components/RouteMap';
@@ -29,22 +29,27 @@ export default async function Svih({ params, searchParams }) {
   const athleteId = await currentAthleteId();
   if (!athleteId) redirect('/');
 
-  const { data: a } = await db()
+  const { data: cached } = await db()
     .from('activities')
     .select('*')
     .eq('strava_id', id)
     .eq('athlete_id', athleteId) // cizí aktivity neukazujeme
     .maybeSingle();
-  if (!a) notFound();
 
-  // Živá data ze Stravy; když Strava neodpoví, ukážeme aspoň to, co máme v databázi.
+  // Živá data ze Stravy; když Strava neodpoví, ukážeme aspoň to, co je v mezipaměti.
   const athlete = await getAthlete(athleteId);
+  if (!athlete) redirect('/');
   let s = null;
   try {
     s = await getActivity(await validToken(athlete), id);
   } catch (e) {
     console.error('activity detail', e);
   }
+  // Mezipaměť drží jen posledních ~7 dní (podmínky Stravy). Starší jízda se ukáže živě, jen už bez pochvaly.
+  // Strava vrací aktivitu jen vlastníkovi tokenu; pro jistotu kontrolujeme i ID sportovce.
+  const live = s && String(s.athlete?.id) === String(athlete.strava_id) ? toRow(athleteId, s) : null;
+  const a = cached || live;
+  if (!a) notFound();
 
   const distance = s?.distance ?? Number(a.distance_m);
   const moving = s?.moving_time ?? a.moving_time_s;

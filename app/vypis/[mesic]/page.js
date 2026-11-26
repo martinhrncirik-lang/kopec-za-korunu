@@ -1,5 +1,6 @@
 import { notFound, redirect } from 'next/navigation';
-import { monthSummary, getAthlete } from '@/lib/db';
+import { getAthlete } from '@/lib/db';
+import { fetchMonths, summarize, monthMinus } from '@/lib/history';
 import { pickRecipientId } from '@/lib/recipients';
 import { monthVerdictFor } from '@/lib/monthly';
 import { currentMonth } from '@/lib/months';
@@ -21,9 +22,13 @@ export default async function Statement({ params, searchParams }) {
   if (!athleteId) redirect('/');
 
   const athlete = await getAthlete(athleteId);
-  const { km, count } = await monthSummary(athleteId, mesic);
+  if (!athlete) redirect('/');
+  // Živě ze Stravy: daný měsíc a 12 měsíců před ním (kvůli hodnoticí větě). Nic se neukládá.
+  const past = mesic < currentMonth();
+  const rows = await fetchMonths(athlete, past ? monthMinus(mesic, 12) : mesic, mesic);
+  const { km, count } = summarize(rows, mesic);
   let verdict = null;
-  if (count && mesic < currentMonth()) { try { verdict = await monthVerdictFor(athleteId, mesic); } catch (e) { console.error('verdict', e); } }
+  if (count && past) { try { verdict = await monthVerdictFor(athlete, mesic, rows); } catch (e) { console.error('verdict', e); } }
   const isDouble = sp?.x === '2';
   const base = Math.round(km * RATE_CZK_PER_KM);
   const amount = base * (isDouble ? 2 : 1);

@@ -25,8 +25,8 @@ export default function Privacy() {
           <li><strong>Technické údaje:</strong> odběr notifikací tvého zařízení a deník technických zpráv od Stravy (čísla aktivit a výsledek zpracování).</li>
         </ul>
         <p>
-          Mapu trasy a podrobnosti jízdy aplikace načítá ze Stravy jen ve chvíli, kdy je zobrazuješ, a neukládá je.
-          Místo startu se neukládá. Použije se jen jednou, k zjištění teploty (viz níže).
+          Měsíční součty, výpisy, rekordy i mapu trasy aplikace načítá ze Stravy vždy ve chvíli, kdy je potřebuje,
+          a trvale je neukládá. Místo startu se neukládá vůbec, použije se jen jednou k zjištění teploty (viz níže).
         </p>
 
         <h2>Proč a na jakém základě</h2>
@@ -52,8 +52,9 @@ export default function Privacy() {
 
         <h2>Jak dlouho</h2>
         <p>
-          Údaje se uchovávají, dokud máš Kopec propojený se Stravou. Deník technických zpráv se maže nejpozději
-          po 90 dnech.
+          Aktivity ze Stravy a k nim pochvaly drží aplikace jen jako krátkou mezipaměť, nejdéle 7 dní. Totéž platí
+          pro deník technických zpráv. Účet (jméno, profilový obrázek, přístupové klíče) a tvoje nastavení zůstávají,
+          dokud máš Kopec propojený se Stravou.
         </p>
         <p>
           Když v Nastavení zvolíš <strong>Odpojit Stravu</strong>, nebo když aplikaci odpojíš přímo ve Stravě

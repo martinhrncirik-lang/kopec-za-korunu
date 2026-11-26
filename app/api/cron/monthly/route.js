@@ -1,5 +1,6 @@
 import { APP_URL, RATE_CZK_PER_KM } from '@/lib/config';
-import { db, monthSummary } from '@/lib/db';
+import { db } from '@/lib/db';
+import { fetchMonths, summarize, monthMinus } from '@/lib/history';
 import { notifyAthlete } from '@/lib/push';
 import { currentMonth, previousMonth, monthLabel } from '@/lib/months';
 import { fmtKm } from '@/lib/stats';
@@ -16,6 +17,8 @@ async function log(payload, result) {
   }
 }
 
+export const maxDuration = 60;
+
 export async function GET(req) {
   const expected = (process.env.CRON_SECRET || '').trim();
   const got = (req.headers.get('authorization') || '').trim();
@@ -24,13 +27,8 @@ export async function GET(req) {
     return new Response('Unauthorized', { status: 401 });
   }
 
-  // Úklid deníku: technické záznamy starší 60 dní mažeme (zásady ochrany osobních údajů slibují nejvýš 90 dní).
-  try {
-    await db().from('webhook_events').delete().lt('received_at', new Date(Date.now() - 60 * 864e5).toISOString());
-  } catch (e) { console.error('cleanup', e); }
-
   const month = previousMonth(currentMonth());
-  const { data: athletes, error } = await db().from('athletes').select('id');
+  const { data: athletes, error } = await db().from('athletes').select('*');
   if (error) {
     await log({ month }, `chyba databáze: ${error.message}`);
     throw error;
@@ -51,11 +49,13 @@ export async function GET(req) {
   for (const a of athletes) {
     if (alreadySent.has(Number(a.id))) { details.push(`#${a.id}: už odesláno dříve`); continue; }
     try {
-      const { km, count } = await monthSummary(a.id, month);
+      // Živě ze Stravy: minulý měsíc + 12 měsíců před ním kvůli hodnoticí větě
+      const rows = await fetchMonths(a, monthMinus(month, 12), month);
+      const { km, count } = summarize(rows, month);
       if (count === 0) { details.push(`#${a.id}: 0 aktivit`); continue; }
       const czk = Math.round(km * RATE_CZK_PER_KM);
       let verdict = null;
-      try { verdict = await monthVerdictFor(a.id, month); } catch (e) { console.error('verdict', e); }
+      try { verdict = await monthVerdictFor(a, month, rows); } catch (e) { console.error('verdict', e); }
       const sent = await notifyAthlete(a.id, {
         title: `${monthLabel(month)}: ${fmtKm(km)} km = ${czk} Kč`,
         body: `${verdict ? verdict + ' ' : ''}Výpis a QR kód pro dar jsou připravené.`,
@@ -63,7 +63,7 @@ export async function GET(req) {
       });
       notified += sent;
       if (sent > 0) sentIds.push(a.id);
-      details.push(`#${a.id}: ${fmtKm(km)} km, notifikací ${sent}${sent === 0 ? ' (žádné zařízení s povolenými notifikacemi)' : ''}`);
+      details.push(`#${a.id}: notifikací ${sent}${sent === 0 ? ' (žádné zařízení s povolenými notifikacemi)' : ''}`);
     } catch (e) {
       details.push(`#${a.id}: chyba ${e.message}`);
     }

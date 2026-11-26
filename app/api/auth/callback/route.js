@@ -2,7 +2,8 @@ import { NextResponse, after } from 'next/server';
 import { cookies } from 'next/headers';
 import { APP_URL } from '@/lib/config';
 import { db } from '@/lib/db';
-import { exchangeCode, backfill } from '@/lib/strava';
+import { exchangeCode } from '@/lib/strava';
+import { syncRecent } from '@/lib/sync';
 import { cleanStravaUrl } from '@/lib/avatar';
 import { notifyAdminNewAthlete } from '@/lib/admin';
 import { SESSION_COOKIE, SESSION_MAX_AGE, sessionCookieValue } from '@/lib/session';
@@ -48,8 +49,8 @@ export async function GET(req) {
     .single();
   if (error) throw error;
 
-  // Historie posledních 12 týdnů se stáhne na pozadí, uživatel nečeká.
-  after(() => backfill(athlete).catch((e) => console.error('backfill', e)));
+  // Posledních pár dní s pochvalami do mezipaměti na pozadí; historie se jinak čte živě ze Stravy.
+  after(() => syncRecent(athlete).catch((e) => console.error('sync', e)));
   // Autorovi push, že se připojil někdo nový. Chyba nesmí shodit přihlášení.
   if (!existing) after(() => notifyAdminNewAthlete(athlete).catch((e) => console.error('admin notify', e)));
 
