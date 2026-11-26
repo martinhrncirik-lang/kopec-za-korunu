@@ -89,6 +89,7 @@ export default async function Svih({ params, searchParams }) {
     <>
       {['1', '2'].includes(sp?.intro) && (
         <RideIntro
+          key={`${id}-${sp.intro}-${Date.now()}`}
           km={Math.round(km * 10) / 10}
           elevation={Math.round(elevation)}
           praise={a.praise}
@@ -136,7 +137,7 @@ export default async function Svih({ params, searchParams }) {
       </section>
 
       <ShareButton text={`${a.praise ? a.praise + ' ' : `${fmtKm(km)} km na kole. `}Každý kilometr = koruna na dobrou věc.`} />
-      <p><BackLink /> · <Link className="link" href={`/svih/${id}?intro=2`}>▶ Přehrát animaci</Link></p>
+      <p><BackLink /> · <a className="link" href={`/svih/${id}?intro=2`}>▶ Přehrát animaci</a></p>
     </>
   );
 }
